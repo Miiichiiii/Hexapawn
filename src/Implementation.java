@@ -1,5 +1,7 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.JLabel;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -20,6 +22,7 @@ public class Implementation extends GUI {
         //Add a ActionListener and run the onClick function
         for(int y = 0; y < labelList.length; y++) {
             for (int x = 0; x < labelList[0].length; x++) {
+                labelList[y][x].setOpaque(true);
                 labelList[y][x].addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
@@ -30,9 +33,16 @@ public class Implementation extends GUI {
             }
         }
 
+
     }
 
     private void onClick(MouseEvent e) {
+        JLabel Current_Label = (JLabel) e.getComponent();
+        Current_Label.setBackground(Color.GREEN);
+        // If the Field has a white pawn, allow move
+        if (Current_Label.getIcon() == Icon_white_pawn) {
+
+        }
 
     }
 
