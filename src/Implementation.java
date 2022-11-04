@@ -36,11 +36,16 @@ public class Implementation extends GUI {
 
     }
 
+
     private void onClick(MouseEvent e) {
         JLabel Current_Label = (JLabel) e.getComponent();
         Current_Label.setBackground(Color.GREEN);
         // If the Field has a white pawn, allow move
+        Label LabelObj = Label.retrieveLabel(Current_Label);
+        if (LabelObj.state == State.WHITE) {
 
+
+        }
     }
 
     private boolean initializePictures() {
