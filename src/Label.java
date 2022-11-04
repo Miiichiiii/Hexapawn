@@ -6,9 +6,12 @@ public class Label {
     protected static ArrayList<Label> labelList = new ArrayList<Label>();
     protected State state;
     protected JLabel label;
-    public Label(JLabel label, State state) {
+    protected final short x, y;
+    public Label(JLabel label, short x, short y, State state) {
         this.state = state;
         this.label = label;
+        this.x = x;
+        this.y = y;
         JlabelList.add(label);
         labelList.add(this);
     }
@@ -21,6 +24,13 @@ public class Label {
         }
         return null;
     }
+    public short getX() {
+        return this.x;
+    }
+    public short getY() {
+        return this.y;
+    }
+
     public State getState() {
         return this.state;
     }
