@@ -17,6 +17,8 @@ public class Label {
     }
 
     public static Label retrieveLabel(JLabel label) {
+        //This method is used in the onClick method to retrieve the object of the
+        //Label class witch contains more information than the normal JLabel
         for(int i = 0; i < JlabelList.size(); i++) {
             if (JlabelList.get(i) == label) {
                 return labelList.get(i);
