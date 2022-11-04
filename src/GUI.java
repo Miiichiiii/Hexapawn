@@ -11,6 +11,9 @@ public class GUI extends JFrame{
     protected JLabel label_2_1;
     protected JLabel label_2_2;
     protected JPanel mainPanel;
+    public JLabel[][] labelList = {{label_0_0, label_0_1, label_0_2},
+                                   {label_1_0, label_1_1, label_1_2},
+                                   {label_2_0, label_2_1, label_2_2}};
 
     public GUI() {
         setContentPane(mainPanel);

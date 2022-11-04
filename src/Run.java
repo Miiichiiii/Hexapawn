@@ -6,6 +6,7 @@ public class Run {
     }
 
     private static void run() {
+        //Start the Application
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
