@@ -9,6 +9,7 @@ public class Map {
         for(int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 stateMap[i][j] = Label.labelList.get(i*3+j).getState();
+
             }
         }
     }
