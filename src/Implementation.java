@@ -40,24 +40,24 @@ public class Implementation extends GUI {
         JLabel Current_Label = (JLabel) e.getComponent();
         Current_Label.setBackground(Color.GREEN);
         // If the Field has a white pawn, allow move
-        if (Current_Label.getIcon() == Icon_white_pawn) {
-
-        }
 
     }
 
     private boolean initializePictures() {
         boolean works;
-        for (int x = 0; x < labelList[0].length; x++) {
+        for (short x = 0; x < labelList[0].length; x++) {
             works = load_image(labelList[0][x], "pictures/pawn_black.png");
+            new Label(labelList[0][x], x, (short) 0, State.BLACK);
             if (!works) return false;
         }
-        for (int x = 0; x < labelList[1].length; x++) {
+        for (short x = 0; x < labelList[1].length; x++) {
             works = load_image(labelList[1][x], "pictures/empty_field.png");
+            new Label(labelList[1][x], x, (short) 1, State.EMPTY);
             if (!works) return false;
         }
-        for (int x = 0; x < labelList[2].length; x++) {
+        for (short x = 0; x < labelList[2].length; x++) {
             works = load_image(labelList[2][x], "pictures/pawn_white.png");
+            new Label(labelList[2][x], x, (short) 2, State.WHITE);
             if (!works) return false;
         }
         return true;
