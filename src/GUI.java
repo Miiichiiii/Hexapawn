@@ -1,6 +1,6 @@
 import javax.swing.*;
 
-public class GUI {
+public class GUI extends JFrame{
     private JLabel label_0_0;
     private JLabel label_0_1;
     private JLabel label_0_2;
