@@ -5,7 +5,7 @@ public class Label {
     protected static ArrayList<JLabel> JlabelList = new ArrayList<JLabel>();
     public static ArrayList<Label> labelList = new ArrayList<Label>();
     protected State state;
-    protected JLabel label;
+    protected final JLabel label;
     protected final short x, y;
     public Label(JLabel label, short x, short y, State state) {
         this.state = state;
@@ -26,6 +26,11 @@ public class Label {
         }
         return null;
     }
+
+    public JLabel getLabel() {
+        return label;
+    }
+
     public short getX() {
         return this.x;
     }
