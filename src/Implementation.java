@@ -46,9 +46,9 @@ public class Implementation extends GUI {
     private boolean initializePictures() {
         boolean works;
         for (short x = 0; x < labelList[0].length; x++) {
-            works = load_image(labelList[0][x], "pictures/pawn_black.png");
-            new Label(labelList[0][x], x, (short) 0, State.BLACK);
-            if (!works) return false;
+            works = load_image(labelList[0][x], "pictures/pawn_black.png"); //Load the Image for every Label in the row
+            new Label(labelList[0][x], x, (short) 0, State.BLACK); //Instanciate the Label class
+            if (!works) return false; //Return false if an error occured while loading the images.
         }
         for (short x = 0; x < labelList[1].length; x++) {
             works = load_image(labelList[1][x], "pictures/empty_field.png");

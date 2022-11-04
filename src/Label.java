@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class Label {
     protected static ArrayList<JLabel> JlabelList = new ArrayList<JLabel>();
-    protected static ArrayList<Label> labelList = new ArrayList<Label>();
+    public static ArrayList<Label> labelList = new ArrayList<Label>();
     protected State state;
     protected JLabel label;
     protected final short x, y;
