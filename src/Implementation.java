@@ -4,6 +4,7 @@ import java.awt.event.MouseEvent;
 public class Implementation extends GUI {
     public Implementation() {
         super();
+        initializeListener();
     }
 
     private void initializeListener() {
