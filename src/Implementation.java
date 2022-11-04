@@ -36,9 +36,16 @@ public class Implementation extends GUI {
 
     }
 
-
+    private void clearColor() {
+        for(int y = 0; y < labelList.length; y++) {
+            for(int x = 0; x < labelList[0].length; x++) {
+                labelList[y][x].setBackground(Color.WHITE);
+            }
+        }
+    }
     private void onClick(MouseEvent e) {
         JLabel Current_Label = (JLabel) e.getComponent();
+        clearColor();
         Current_Label.setBackground(Color.GREEN);
         // If the Field has a white pawn, allow move
         Label LabelObj = Label.retrieveLabel(Current_Label);
