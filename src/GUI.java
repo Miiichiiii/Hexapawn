@@ -1,13 +1,23 @@
 import javax.swing.*;
 
 public class GUI extends JFrame{
-    private JLabel label_0_0;
-    private JLabel label_0_1;
-    private JLabel label_0_2;
-    private JLabel label_1_0;
-    private JLabel label_1_1;
-    private JLabel label_1_2;
-    private JLabel label_2_0;
-    private JLabel label_2_1;
-    private JLabel label_2_2;
+    protected JLabel label_0_0;
+    protected JLabel label_0_1;
+    protected JLabel label_0_2;
+    protected JLabel label_1_0;
+    protected JLabel label_1_1;
+    protected JLabel label_1_2;
+    protected JLabel label_2_0;
+    protected JLabel label_2_1;
+    protected JLabel label_2_2;
+    protected JPanel mainPanel;
+
+    public GUI() {
+        setContentPane(mainPanel);
+        setTitle("Hexapawn"); //Sets the name of the Application
+        setSize(805, 818);
+        setLocationRelativeTo(null); //Set spawn point to the middle of the screen
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
+
 }
