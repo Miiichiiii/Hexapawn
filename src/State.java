@@ -1,3 +1,3 @@
 public enum State {
-    BLACK, WHITE, EMPTY, SELECTED;
+    BLACK, WHITE, EMPTY
 }

@@ -49,32 +49,42 @@ public class Implementation extends GUI {
         Label LabelObj = Label.retrieveLabel(Current_Label);
         assert LabelObj != null; //IntelliJ cries without this
 
-        if (Current_Label.getBackground() == Color.GREEN) { //Background is only green if the spot is eligible to move on
+        if (LabelObj.getMove() == Move.NEW_POSITION) { //Background is only green if the spot is eligible to move on
             LabelObj.setState(State.WHITE); // Set the state of an empty field to white, indicate move
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
-                    if (State.SELECTED == Label.retrieveLabel(labelList[i][j]).getState()) { // Look for Selected Label
+                    if (Move.SELECTED == Label.retrieveLabel(labelList[i][j]).getMove()) { // Look for Selected Label
                         Label.retrieveLabel(labelList[i][j]).setState(State.EMPTY); // Replace with Empty Field
-                        //NEED TO FIND WAY TO UPDATE PICTURES
+                        loadImage(labelList[i][j], Picture.EMPTY);
+                        loadImage(Current_Label, Picture.WHITE);
+                        clearColor();
+                        Label.clearMove();
+                        return;
                     }
                 }
             }
         }
         clearColor();
+        Label.clearMove();
         Current_Label.setBackground(Color.GRAY);
         // If the field has a white pawn, allow moves
-
         if (LabelObj.getState() == State.WHITE) {
-            LabelObj.setState(State.SELECTED); // Select Current white Pawn, needed for moves
             short targetRow = (short) (LabelObj.y - 1); //The row in which the pawn can potentially move
-            if (Map.MapState(targetRow, LabelObj.x) == State.EMPTY) { //Only allow forward move if field is empty
+            if (targetRow < 0) return; // Avoid index out of bounds exception. Maybe win here TODO.
+            if (Label.retrieveByCoordinates(LabelObj.x, targetRow).getState() == State.EMPTY) { //Only allow forward move if field is empty
                 labelList[targetRow][LabelObj.x].setBackground(Color.GREEN);
+                LabelObj.setMove(Move.SELECTED);
+                Label.retrieveByCoordinates(LabelObj.x, targetRow).setMove(Move.NEW_POSITION);
             }
-            if (LabelObj.x + 1 < 3 && Map.MapState(targetRow, (short) (LabelObj.x + 1)) == State.BLACK) { //Only allow diagonal move if there is a black pawn
-                labelList[targetRow][LabelObj.x].setBackground(Color.GREEN);
+            if (LabelObj.x + 1 < 3 &&  Label.retrieveByCoordinates((short)(LabelObj.x + 1), targetRow).getState() == State.BLACK) { //Only allow diagonal move if there is a black pawn
+                labelList[targetRow][LabelObj.x + 1].setBackground(Color.GREEN);
+                LabelObj.setMove(Move.SELECTED);
+                Label.retrieveByCoordinates((short)(LabelObj.x + 1), targetRow).setMove(Move.NEW_POSITION);
             }
-            if (LabelObj.x + 1 > 0 && Map.MapState(targetRow, (short) (LabelObj.x - 1)) == State.BLACK) { //Only allow diagonal move if there is a black pawn
-                labelList[targetRow][LabelObj.x].setBackground(Color.GREEN);
+            if (LabelObj.x - 1 >= 0 && Label.retrieveByCoordinates((short)(LabelObj.x - 1), targetRow).getState() == State.BLACK) { //Only allow diagonal move if there is a black pawn
+                labelList[targetRow][LabelObj.x - 1].setBackground(Color.GREEN);
+                LabelObj.setMove(Move.SELECTED);
+                Label.retrieveByCoordinates((short)(LabelObj.x - 1), targetRow).setMove(Move.NEW_POSITION);
             }
 
 
