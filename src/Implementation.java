@@ -86,24 +86,33 @@ public class Implementation extends GUI {
     private boolean initializePictures() {
         boolean works;
         for (short x = 0; x < labelList[0].length; x++) {
-            works = load_image(labelList[0][x], "pictures/pawn_black.png"); //Load the image for every label in the row
+            works = loadImage(labelList[0][x], Picture.BLACK); //Load the image for every label in the row
             new Label(labelList[0][x], x, (short) 0, State.BLACK); //Instantiate the label class
             if (!works) return false; //Return false if an error occurred while loading the images.
         }
         for (short x = 0; x < labelList[1].length; x++) {
-            works = load_image(labelList[1][x], "pictures/empty_field.png"); //Load the image for every label in the row
+            works = loadImage(labelList[1][x], Picture.EMPTY); //Load the image for every label in the row
             new Label(labelList[1][x], x, (short) 1, State.EMPTY); //Instantiate the label class
             if (!works) return false; //Return false if an error occurred while loading the images.
         }
         for (short x = 0; x < labelList[2].length; x++) {
-            works = load_image(labelList[2][x], "pictures/pawn_white.png"); //Load the image for every label in the row
+            works = loadImage(labelList[2][x], Picture.WHITE); //Load the image for every label in the row
             new Label(labelList[2][x], x, (short) 2, State.WHITE); //Instantiate the label class
             if (!works) return false; //Return false if an error occurred while loading the images.
         }
         return true;
     }
 
-    private boolean load_image(JLabel label, String path) {
+    private boolean loadImage(JLabel label, Picture picture) {
+        //Method to simplify loading images
+        String path;
+        if (picture == Picture.BLACK) path = "pictures/pawn_black.png";
+        else if (picture == Picture.WHITE) path = "pictures/pawn_white.png";
+        else path = "pictures/empty_field.png";
+        return _loadPicture(label, path);
+    }
+
+    private boolean _loadPicture(JLabel label, String path) {
         //Catch the exception if something went wrong with loading the image
         try {
             BufferedImage image = ImageIO.read(new File(path)); //Read the image
