@@ -19,7 +19,7 @@ public class Implementation extends GUI {
 
     private void initializeListener() {
         //For every label in the label list:
-        //Add a ActionListener and run the onClick function
+        //Add an actionListener and run the onClick method
         for(int y = 0; y < labelList.length; y++) {
             for (int x = 0; x < labelList[0].length; x++) {
 
@@ -49,11 +49,11 @@ public class Implementation extends GUI {
         clearColor();
 
         Current_Label.setBackground(Color.GREEN);
-        // If the Field has a white pawn, allow move
+        // If the field has a white pawn, allow move
         Label LabelObj = Label.retrieveLabel(Current_Label);
         assert LabelObj != null;
 
-        if (LabelObj.state == State.WHITE  && LabelObj.y < 3 && LabelObj.y > 0) {
+        if (LabelObj.getState() == State.WHITE  && LabelObj.y < 3 && LabelObj.y > 0) {
             short targetRow = (short) (LabelObj.y - 1);
             if (Map.MapState(targetRow, LabelObj.x) == State.EMPTY) {
                 labelList[targetRow][LabelObj.x].setBackground(Color.GREEN);
@@ -72,9 +72,9 @@ public class Implementation extends GUI {
     private boolean initializePictures() {
         boolean works;
         for (short x = 0; x < labelList[0].length; x++) {
-            works = load_image(labelList[0][x], "pictures/pawn_black.png"); //Load the Image for every Label in the row
-            new Label(labelList[0][x], x, (short) 0, State.BLACK); //Instanciate the Label class
-            if (!works) return false; //Return false if an error occured while loading the images.
+            works = load_image(labelList[0][x], "pictures/pawn_black.png"); //Load the image for every label in the row
+            new Label(labelList[0][x], x, (short) 0, State.BLACK); //Instantiate the label class
+            if (!works) return false; //Return false if an error occurred while loading the images.
         }
         for (short x = 0; x < labelList[1].length; x++) {
             works = load_image(labelList[1][x], "pictures/empty_field.png");
@@ -90,11 +90,11 @@ public class Implementation extends GUI {
     }
 
     private boolean load_image(JLabel label, String path) {
-        //Catch the Exception if something went wrong with loading the image
+        //Catch the exception if something went wrong with loading the image
         try {
             BufferedImage image = ImageIO.read(new File(path)); //Read the image
             ImageIcon icon = new ImageIcon(image); //Convert the image to an icon
-            label.setIcon(icon); //Set the picture to the label
+            label.setIcon(icon); //Set the icon to the label
         }
         catch (IOException ex) {
             return false;
