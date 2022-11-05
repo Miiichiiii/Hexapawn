@@ -22,6 +22,7 @@ public class Implementation extends GUI {
         //Add a ActionListener and run the onClick function
         for(int y = 0; y < labelList.length; y++) {
             for (int x = 0; x < labelList[0].length; x++) {
+
                 labelList[y][x].setOpaque(true);
                 labelList[y][x].addMouseListener(new MouseAdapter() {
                     @Override
@@ -43,16 +44,29 @@ public class Implementation extends GUI {
             }
         }
     }
-    private void onClick(MouseEvent e) {
+    public void onClick(MouseEvent e) {
         JLabel Current_Label = (JLabel) e.getComponent();
         clearColor();
+
         Current_Label.setBackground(Color.GREEN);
         // If the Field has a white pawn, allow move
         Label LabelObj = Label.retrieveLabel(Current_Label);
-        if (LabelObj.state == State.WHITE) {
+        assert LabelObj != null;
 
+        if (LabelObj.state == State.WHITE  && LabelObj.y < 3 && LabelObj.y > 0) {
+            short targetRow = (short) (LabelObj.y - 1);
+            if (Map.MapState(targetRow, LabelObj.x) == State.EMPTY) {
+                labelList[targetRow][LabelObj.x].setBackground(Color.GREEN);
+            }
+            if (LabelObj.x + 1 < 3 && Map.MapState(targetRow, (short) (LabelObj.x + 1)) == State.BLACK) {
+                labelList[targetRow][LabelObj.x].setBackground(Color.GREEN);
+            }
+            if (LabelObj.x +1 > 0 && Map.MapState(targetRow, (short) (LabelObj.x - 1)) == State.BLACK) {
+                labelList[targetRow][LabelObj.x].setBackground(Color.GREEN);
+            }
 
         }
+
     }
 
     private boolean initializePictures() {
