@@ -49,42 +49,39 @@ public class Implementation extends GUI {
         Label LabelObj = Label.retrieveLabel(Current_Label);
         assert LabelObj != null; //IntelliJ cries without this
 
-        if (LabelObj.getMove() == Move.NEW_POSITION) { //Background is only green if the spot is eligible to move on
+        clearColor();
+        if (LabelObj.getMove() == Move.NEW_POSITION) { //If Label is set to NEW_POSITION the pawn can move to this field
             LabelObj.setState(State.WHITE); // Set the state of an empty field to white, indicate move
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
-                    if (Move.SELECTED == Label.retrieveLabel(labelList[i][j]).getMove()) { // Look for Selected Label
+                    if (Label.retrieveLabel(labelList[i][j]).getMove() == Move.SELECTED) { // Search for the pawn which will move to the new Label
                         Label.retrieveLabel(labelList[i][j]).setState(State.EMPTY); // Replace with Empty Field
-                        loadImage(labelList[i][j], Picture.EMPTY);
-                        loadImage(Current_Label, Picture.WHITE);
-                        clearColor();
-                        Label.clearMove();
+                        loadImage(labelList[i][j], Picture.EMPTY); //Load empty image for the old pawn position
+                        loadImage(Current_Label, Picture.WHITE); //Load the white pawn picture for the new pawn position
+                        Label.clearMove(); //clear every Move state
                         return;
                     }
                 }
             }
         }
-        clearColor();
-        Label.clearMove();
-        Current_Label.setBackground(Color.GRAY);
+        Label.clearMove(); //clear every Move state
+        Current_Label.setBackground(Color.GRAY); //Indicate that the field is selected
+        LabelObj.setMove(Move.SELECTED); //Set the move state to selected
         // If the field has a white pawn, allow moves
         if (LabelObj.getState() == State.WHITE) {
             short targetRow = (short) (LabelObj.y - 1); //The row in which the pawn can potentially move
             if (targetRow < 0) return; // Avoid index out of bounds exception. Maybe win here TODO.
             if (Label.retrieveByCoordinates(LabelObj.x, targetRow).getState() == State.EMPTY) { //Only allow forward move if field is empty
-                labelList[targetRow][LabelObj.x].setBackground(Color.GREEN);
-                LabelObj.setMove(Move.SELECTED);
-                Label.retrieveByCoordinates(LabelObj.x, targetRow).setMove(Move.NEW_POSITION);
+                labelList[targetRow][LabelObj.x].setBackground(Color.GREEN); //Indicate a possible move
+                Label.retrieveByCoordinates(LabelObj.x, targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
             }
             if (LabelObj.x + 1 < 3 &&  Label.retrieveByCoordinates((short)(LabelObj.x + 1), targetRow).getState() == State.BLACK) { //Only allow diagonal move if there is a black pawn
-                labelList[targetRow][LabelObj.x + 1].setBackground(Color.GREEN);
-                LabelObj.setMove(Move.SELECTED);
-                Label.retrieveByCoordinates((short)(LabelObj.x + 1), targetRow).setMove(Move.NEW_POSITION);
+                labelList[targetRow][LabelObj.x + 1].setBackground(Color.GREEN); //Indicate a possible move
+                Label.retrieveByCoordinates((short)(LabelObj.x + 1), targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
             }
             if (LabelObj.x - 1 >= 0 && Label.retrieveByCoordinates((short)(LabelObj.x - 1), targetRow).getState() == State.BLACK) { //Only allow diagonal move if there is a black pawn
-                labelList[targetRow][LabelObj.x - 1].setBackground(Color.GREEN);
-                LabelObj.setMove(Move.SELECTED);
-                Label.retrieveByCoordinates((short)(LabelObj.x - 1), targetRow).setMove(Move.NEW_POSITION);
+                labelList[targetRow][LabelObj.x - 1].setBackground(Color.GREEN); //Indicate a possible move
+                Label.retrieveByCoordinates((short)(LabelObj.x - 1), targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
             }
 
 
