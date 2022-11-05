@@ -20,11 +20,11 @@ public class Implementation extends GUI {
     private void initializeListener() {
         //For every label in the label list:
         //Add an actionListener and run the onClick method
-        for(int y = 0; y < labelList.length; y++) {
-            for (int x = 0; x < labelList[0].length; x++) {
+        for (JLabel[] jLabels : labelList) {
+            for (JLabel label : jLabels) {
 
-                labelList[y][x].setOpaque(true);
-                labelList[y][x].addMouseListener(new MouseAdapter() {
+                label.setOpaque(true);
+                label.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         onClick(e);
@@ -38,9 +38,9 @@ public class Implementation extends GUI {
     }
 
     private void clearColor() {
-        for(int y = 0; y < labelList.length; y++) {
-            for(int x = 0; x < labelList[0].length; x++) {
-                labelList[y][x].setBackground(Color.WHITE);
+        for (JLabel[] jLabels : labelList) {
+            for (JLabel label: jLabels) {
+                label.setBackground(Color.WHITE);
             }
         }
     }
@@ -48,20 +48,20 @@ public class Implementation extends GUI {
         JLabel Current_Label = (JLabel) e.getComponent();
         clearColor();
 
-        Current_Label.setBackground(Color.GREEN);
+        Current_Label.setBackground(Color.GRAY);
         // If the field has a white pawn, allow move
         Label LabelObj = Label.retrieveLabel(Current_Label);
         assert LabelObj != null;
 
-        if (LabelObj.getState() == State.WHITE  && LabelObj.y < 3 && LabelObj.y > 0) {
-            short targetRow = (short) (LabelObj.y - 1);
-            if (Map.MapState(targetRow, LabelObj.x) == State.EMPTY) {
+        if (LabelObj.getState() == State.WHITE) {
+            short targetRow = (short) (LabelObj.y - 1); //The row in which the pawn can potentially move
+            if (Map.MapState(targetRow, LabelObj.x) == State.EMPTY) { //Only allow forward move if field is empty
                 labelList[targetRow][LabelObj.x].setBackground(Color.GREEN);
             }
-            if (LabelObj.x + 1 < 3 && Map.MapState(targetRow, (short) (LabelObj.x + 1)) == State.BLACK) {
+            if (LabelObj.x + 1 < 3 && Map.MapState(targetRow, (short) (LabelObj.x + 1)) == State.BLACK) { //Only allow diagonal move if there is a black pawn
                 labelList[targetRow][LabelObj.x].setBackground(Color.GREEN);
             }
-            if (LabelObj.x +1 > 0 && Map.MapState(targetRow, (short) (LabelObj.x - 1)) == State.BLACK) {
+            if (LabelObj.x +1 > 0 && Map.MapState(targetRow, (short) (LabelObj.x - 1)) == State.BLACK) { //Only allow diagonal move if there is a black pawn
                 labelList[targetRow][LabelObj.x].setBackground(Color.GREEN);
             }
 
@@ -77,14 +77,14 @@ public class Implementation extends GUI {
             if (!works) return false; //Return false if an error occurred while loading the images.
         }
         for (short x = 0; x < labelList[1].length; x++) {
-            works = load_image(labelList[1][x], "pictures/empty_field.png");
-            new Label(labelList[1][x], x, (short) 1, State.EMPTY);
-            if (!works) return false;
+            works = load_image(labelList[1][x], "pictures/empty_field.png"); //Load the image for every label in the row
+            new Label(labelList[1][x], x, (short) 1, State.EMPTY); //Instantiate the label class
+            if (!works) return false; //Return false if an error occurred while loading the images.
         }
         for (short x = 0; x < labelList[2].length; x++) {
-            works = load_image(labelList[2][x], "pictures/pawn_white.png");
-            new Label(labelList[2][x], x, (short) 2, State.WHITE);
-            if (!works) return false;
+            works = load_image(labelList[2][x], "pictures/pawn_white.png"); //Load the image for every label in the row
+            new Label(labelList[2][x], x, (short) 2, State.WHITE); //Instantiate the label class
+            if (!works) return false; //Return false if an error occurred while loading the images.
         }
         return true;
     }

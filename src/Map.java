@@ -1,6 +1,6 @@
 public class Map {
     public static State MapState(short y, short x) {
-
+        /*
         boolean turn = true; // true = whites turn / false = blacks turn
 
         // create a Map of the current States for move logic
@@ -19,5 +19,6 @@ public class Map {
                      state_1_0, state_1_1, state_1_2
                      state_2_0, state_2_1, state_2_2
          */
+        return Label.labelList.get(y * 3 + x).getState();
     }
 }

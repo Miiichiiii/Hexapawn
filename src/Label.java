@@ -2,11 +2,11 @@ import javax.swing.*;
 import java.util.ArrayList;
 
 public class Label {
-    protected static ArrayList<JLabel> jLabelList = new ArrayList<JLabel>();
+    private static ArrayList<JLabel> jLabelList = new ArrayList<JLabel>();
     public static ArrayList<Label> labelList = new ArrayList<Label>();
-    protected State state;
-    protected final JLabel label;
-    protected final short x, y;
+    private State state;
+    private final JLabel label;
+    public final short x, y;
     public Label(JLabel label, short x, short y, State state) {
         this.state = state;
         this.label = label;
@@ -29,13 +29,6 @@ public class Label {
 
     public JLabel getLabel() {
         return label;
-    }
-
-    public short getX() {
-        return this.x;
-    }
-    public short getY() {
-        return this.y;
     }
 
     public State getState() {
