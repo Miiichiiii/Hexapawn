@@ -139,6 +139,34 @@ public class Implementation extends GUI {
 
     }
 
+    public Win checkwin() { //TODO: Implement this and find way to check if no pawn is movable anymore
+        int AmountWhitePawns = 0, AmountBlackPawns = 0;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                Label CheckLabel = Label.retrieveLabel(labelList[i][j]);
+                if (CheckLabel.getState() == State.WHITE) {
+                    AmountWhitePawns += 1; // Check for amount of Pawns. If 0 after the Loop, declare Win for Opponent
+                }
+                if (CheckLabel.getState() == State.BLACK) {
+                    AmountBlackPawns += 1; // Check for amount of Pawns. If 0 after the Loop, declare Win for Opponent
+                }
+                if ((CheckLabel.getState() == State.WHITE) && (CheckLabel.y == 0)) {
+                    return Win.WHITEWIN; //if a white pawn is at the last rank, declare win for white
+                }
+                if ((CheckLabel.getState() == State.BLACK) && (CheckLabel.y == 2)) {
+                    return Win.BLACKWIN; //if a black pawn is at the first rank, declare win for black
+                }
+
+            }
+        }
+        if (AmountWhitePawns == 0) {
+            return Win.BLACKWIN;
+        }
+        if (AmountBlackPawns == 0) {
+            return Win.WHITEWIN;
+        }
+        return Win.UNDECIDED;
+    }
 
     private boolean initializePictures() {
         boolean works;
