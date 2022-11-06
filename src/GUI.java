@@ -11,10 +11,10 @@ public class GUI extends JFrame{
     protected JLabel label_2_1;
     protected JLabel label_2_2;
     protected JPanel mainPanel;
-    private JButton newGameButton;
-    private JCheckBox computerCheckBox;
-    private JTextArea textArea1;
-    private JLabel winnerLabel;
+    protected JButton newGameButton;
+    protected JCheckBox computerCheckBox;
+    protected JTextArea textArea1;
+    protected JLabel winnerLabel;
     public JLabel[][] labelList = {{label_0_0, label_0_1, label_0_2},
                                    {label_1_0, label_1_1, label_1_2},
                                    {label_2_0, label_2_1, label_2_2}};

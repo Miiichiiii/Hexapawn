@@ -34,20 +34,29 @@ public class Implementation extends GUI {
                 });
             }
         }
+        newGameButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                onNewGameClick();
+                super.mouseClicked(e);
+            }
+        });
 
 
     }
+
+    public void onNewGameClick() {
+        ResetGame();
+    }
+
     public void onClick(MouseEvent e) {
         if (move(e)) {//Only check for win if a pawn has been moved
             Win rv = checkWin();
             if (rv == Win.BLACKWIN) {
-                System.out.println("Black won");
+                loadImage(winnerLabel, Picture.BLACK_WIN);
             }
-            if (rv == Win.WHITEWIN) {
-                System.out.println("White won"); //This is an elementary solution. TODO: Implement a Win Screen and Score
-            }
-            if (rv != Win.UNDECIDED) {
-                ResetGame();
+            else if (rv == Win.WHITEWIN) {
+                loadImage(winnerLabel, Picture.WHITE_WIN);
             }
         }
     }
@@ -135,16 +144,15 @@ public class Implementation extends GUI {
         if (AmountBlackPawns == 0) {
             return Win.WHITEWIN;
         }
-        if (AmountWhitePawns == ImmovableWhitePawn)
+        if (AmountWhitePawns == ImmovableWhitePawn && turn == Turn.WHITE) //If white has no more move available and it's whites turn
             return Win.BLACKWIN;
-        if (AmountBlackPawns == ImmovableBlackPawn)
+        if (AmountBlackPawns == ImmovableBlackPawn && turn == Turn.BLACK) //If black has no more move available and it's blacks turn
             return Win.WHITEWIN;
 
         return Win.UNDECIDED;
     }
 
     private void ResetGame() {
-        // TODO: add Win screen
         initializePictures();
         Move.resetMove();
         Label.ResetLabels();
