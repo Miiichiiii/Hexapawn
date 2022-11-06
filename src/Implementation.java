@@ -48,6 +48,12 @@ public class Implementation extends GUI {
     public void onClick(MouseEvent e) {
         if (turn) whiteMove(e);
         else blackMove(e);
+        if (checkwin() == Win.BLACKWIN) {
+            System.out.println("Black won");
+        }
+        if (checkwin() == Win.WHITEWIN) {
+            System.out.println("White won"); //This is an elementary solution. TODO: Implement a Win Screen and Score
+        }
     }
 
     public void blackMove(MouseEvent e) {
@@ -77,7 +83,7 @@ public class Implementation extends GUI {
             Current_Label.setBackground(Color.GRAY); //Indicate that the field is selected
             LabelObj.setMove(Move.SELECTED); //Set the move state to selected
             short targetRow = (short) (LabelObj.y + 1); //The row in which the pawn can potentially move
-            if (targetRow > 2) return; // Avoid index out of bounds exception. Maybe win here TODO.
+            if (targetRow > 2) return;
             if (Label.retrieveByCoordinates(LabelObj.x, targetRow).getState() == State.EMPTY) { //Only allow forward move if field is empty
                 labelList[targetRow][LabelObj.x].setBackground(Color.GREEN); //Indicate a possible move
                 Label.retrieveByCoordinates(LabelObj.x, targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
@@ -112,6 +118,7 @@ public class Implementation extends GUI {
                         turn = !turn; //Other player's turn
                         return;
                     }
+
                 }
             }
         }
@@ -128,7 +135,7 @@ public class Implementation extends GUI {
             }
             if (LabelObj.x + 1 < 3 &&  Label.retrieveByCoordinates((short)(LabelObj.x + 1), targetRow).getState() == State.BLACK) { //Only allow diagonal move if there is a black pawn
                 labelList[targetRow][LabelObj.x + 1].setBackground(Color.GREEN); //Indicate a possible move
-                Label.retrieveByCoordinates((short)(LabelObj.x + 1), targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
+                Label.retrieveByCoordinates((short)(LabelObj.x + 1), targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected-
             }
             if (LabelObj.x - 1 >= 0 && Label.retrieveByCoordinates((short)(LabelObj.x - 1), targetRow).getState() == State.BLACK) { //Only allow diagonal move if there is a black pawn
                 labelList[targetRow][LabelObj.x - 1].setBackground(Color.GREEN); //Indicate a possible move
@@ -156,6 +163,21 @@ public class Implementation extends GUI {
                 if ((CheckLabel.getState() == State.BLACK) && (CheckLabel.y == 2)) {
                     return Win.BLACKWIN; //if a black pawn is at the first rank, declare win for black
                 }
+                // TODO: WIN CONDITION: if every pawn has an opponent pawn directly infront of it and no pawn diagonal to it, declare a win
+                // This below sucks. WIP for the TODO above
+                // TODO: FIND A BETTER WAY THAN THIS TO CHECK THE WIN CONDITION
+                if ((CheckLabel.getState() == State.BLACK) && ((Label.retrieveLabel(labelList[CheckLabel.y + 1][CheckLabel.x]).getState() != State.EMPTY))) {
+                    if ((CheckLabel.x < 3) && (Label.retrieveLabel(labelList[CheckLabel.y + 1][CheckLabel.x + 1]).getState() != State.EMPTY)) {
+                        CheckLabel.setMovable(true);
+                    }
+                    else if((CheckLabel.x > 0) && (Label.retrieveLabel(labelList[CheckLabel.y + 1][CheckLabel.x - 1]).getState() != State.EMPTY)) {
+                        CheckLabel.setMovable(true);
+                    }
+                    else {
+                        CheckLabel.setMovable(false);
+                    }
+
+                }
 
             }
         }
@@ -165,6 +187,7 @@ public class Implementation extends GUI {
         if (AmountBlackPawns == 0) {
             return Win.WHITEWIN;
         }
+
         return Win.UNDECIDED;
     }
 
