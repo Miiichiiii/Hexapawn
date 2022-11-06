@@ -1,3 +1,6 @@
+import enums.State;
+import enums.Turn;
+
 import java.awt.*;
 
 public class Move {
@@ -5,6 +8,20 @@ public class Move {
     private static Label left = null;
     private static Label forward = null;
     private static Label right = null;
+
+    public static boolean forwardPossible(Label target) {
+        return (target.getState() == State.EMPTY);  //Only allow forward move if field is empty
+    }
+
+    public static boolean rightPossible(Label origin, Label target) {
+        return (origin.x + 1 < 3 && ((target.getState() == State.WHITE && origin.getState() == State.BLACK) ||
+                (target.getState() == State.BLACK && origin.getState() == State.WHITE)));  //Only allow diagonal move if there is a pawn
+    }
+
+    public static boolean leftPossible(Label origin, Label target) {
+        return (origin.x - 1 >= 0 && ((target.getState() == State.WHITE && origin.getState() == State.BLACK) ||
+                (target.getState() == State.BLACK && origin.getState() == State.WHITE)));  //Only allow diagonal move if there is a pawn
+    }
 
     public static void clearColor() {
         if (selected != null) selected.getLabel().setBackground(Color.WHITE);

@@ -75,17 +75,15 @@ public class Implementation extends GUI {
         // If the field has a pawn and the turn is right, allow moves
         if ((LabelObj.getState() == State.BLACK && turn == Turn.BLACK) || (LabelObj.getState() == State.WHITE && turn == Turn.WHITE)) {
             Move.setSelected(LabelObj); //Set the Label to selected
-            if (targetRow > 2) return;
-            if (Label.retrieveLabel(LabelObj.x, targetRow).getState() == State.EMPTY) { //Only allow forward move if field is empty
+            if (targetRow > 2 || targetRow < 0) return;
+            if (Move.forwardPossible(Label.retrieveLabel(LabelObj.x, targetRow))) { //Only allow forward move if field is empty
                 Move.setForward(Label.retrieveLabel(LabelObj.x, targetRow)); //Set the Label to be a potential new position
             }
-            if (LabelObj.x + 1 < 3 && ((Label.retrieveLabel((short)(LabelObj.x + 1), targetRow).getState() == State.WHITE && turn == Turn.BLACK) ||
-                                       (Label.retrieveLabel((short)(LabelObj.x + 1), targetRow).getState() == State.BLACK && turn == Turn.WHITE)))
+            if (Move.rightPossible(LabelObj, Label.retrieveLabel((short)(LabelObj.x + 1), targetRow)))
             { //Only allow diagonal move if there is a pawn and the turn is right
                 Move.setRight(Label.retrieveLabel((short)(LabelObj.x + 1), targetRow)); //Set the Label to be a potential new position
             }
-            if (LabelObj.x - 1 >= 0 && ((Label.retrieveLabel((short)(LabelObj.x - 1), targetRow).getState() == State.WHITE && turn == Turn.BLACK) ||
-                                       (Label.retrieveLabel((short)(LabelObj.x - 1), targetRow).getState() == State.BLACK && turn == Turn.WHITE)))
+            if (Move.leftPossible(LabelObj, Label.retrieveLabel((short)(LabelObj.x - 1), targetRow)))
             { //Only allow diagonal move if there is a pawn and the turn is right
                 Move.setLeft(Label.retrieveLabel((short)(LabelObj.x - 1), targetRow)); //Set the Label to be a potential new position
             }
