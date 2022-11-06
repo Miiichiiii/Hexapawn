@@ -186,6 +186,7 @@ public class Implementation extends GUI {
     }
 
     private void ResetGame() {
+        winnerLabel.setIcon(null);
         won = false;
         initializePictures();
         Move.resetMove();
