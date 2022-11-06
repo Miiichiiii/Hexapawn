@@ -9,7 +9,6 @@ public class Label {
     private final JLabel label;
     public final short x, y;
 
-    private boolean movable = true;
     public Label(JLabel label, short x, short y, State state) {
         this.state = state;
         this.label = label;
@@ -45,14 +44,6 @@ public class Label {
 
     public void setState(State state) {
         this.state = state;
-    }
-
-    public void setMovable(boolean movable) {
-        this.movable = movable;
-    }
-
-    public boolean getMovable() {
-        return this.movable; // Not Sure yet if these are still relevant, will delete later if no use is found
     }
 
     public static void ResetLabels() {
