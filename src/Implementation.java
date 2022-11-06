@@ -48,12 +48,22 @@ public class Implementation extends GUI {
     public void onClick(MouseEvent e) {
         if (turn) whiteMove(e);
         else blackMove(e);
-        if (checkwin() == Win.BLACKWIN) {
+        if (checkWin() == Win.BLACKWIN) {
             System.out.println("Black won");
         }
-        if (checkwin() == Win.WHITEWIN) {
+        if (checkWin() == Win.WHITEWIN) {
             System.out.println("White won"); //This is an elementary solution. TODO: Implement a Win Screen and Score
         }
+    }
+
+    public void movePawn(Label origin, Label target) {
+        target.setState(origin.getState());
+        loadImage(origin.getLabel(), Picture.EMPTY);
+
+        if (origin.getState() == State.BLACK) loadImage(target.getLabel(), Picture.BLACK);
+        else loadImage(target.getLabel(), Picture.WHITE);
+
+        origin.setState(State.EMPTY);
     }
 
     public void blackMove(MouseEvent e) {
@@ -63,13 +73,10 @@ public class Implementation extends GUI {
 
         clearColor();
         if (LabelObj.getMove() == Move.NEW_POSITION) { //If Label is set to NEW_POSITION the pawn can move to this field
-            LabelObj.setState(State.BLACK); // Set the state of an empty field to black, indicate move
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     if (Label.retrieveLabel(labelList[i][j]).getMove() == Move.SELECTED) { // Search for the pawn which will move to the new Label
-                        Label.retrieveLabel(labelList[i][j]).setState(State.EMPTY); // Replace with Empty Field
-                        loadImage(labelList[i][j], Picture.EMPTY); //Load empty image for the old pawn position
-                        loadImage(Current_Label, Picture.BLACK); //Load the white pawn picture for the new pawn position
+                        movePawn(Label.retrieveLabel(labelList[i][j]), LabelObj);
                         Label.clearMove(); //clear every Move state
                         turn = !turn; //Other player's turn
                         return;
@@ -84,17 +91,17 @@ public class Implementation extends GUI {
             LabelObj.setMove(Move.SELECTED); //Set the move state to selected
             short targetRow = (short) (LabelObj.y + 1); //The row in which the pawn can potentially move
             if (targetRow > 2) return;
-            if (Label.retrieveByCoordinates(LabelObj.x, targetRow).getState() == State.EMPTY) { //Only allow forward move if field is empty
+            if (Label.retrieveLabel(LabelObj.x, targetRow).getState() == State.EMPTY) { //Only allow forward move if field is empty
                 labelList[targetRow][LabelObj.x].setBackground(Color.GREEN); //Indicate a possible move
-                Label.retrieveByCoordinates(LabelObj.x, targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
+                Label.retrieveLabel(LabelObj.x, targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
             }
-            if (LabelObj.x + 1 < 3 &&  Label.retrieveByCoordinates((short)(LabelObj.x + 1), targetRow).getState() == State.WHITE) { //Only allow diagonal move if there is a black pawn
+            if (LabelObj.x + 1 < 3 &&  Label.retrieveLabel((short)(LabelObj.x + 1), targetRow).getState() == State.WHITE) { //Only allow diagonal move if there is a black pawn
                 labelList[targetRow][LabelObj.x + 1].setBackground(Color.GREEN); //Indicate a possible move
-                Label.retrieveByCoordinates((short)(LabelObj.x + 1), targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
+                Label.retrieveLabel((short)(LabelObj.x + 1), targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
             }
-            if (LabelObj.x - 1 >= 0 && Label.retrieveByCoordinates((short)(LabelObj.x - 1), targetRow).getState() == State.WHITE) { //Only allow diagonal move if there is a black pawn
+            if (LabelObj.x - 1 >= 0 && Label.retrieveLabel((short)(LabelObj.x - 1), targetRow).getState() == State.WHITE) { //Only allow diagonal move if there is a black pawn
                 labelList[targetRow][LabelObj.x - 1].setBackground(Color.GREEN); //Indicate a possible move
-                Label.retrieveByCoordinates((short)(LabelObj.x - 1), targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
+                Label.retrieveLabel((short)(LabelObj.x - 1), targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
             }
 
         }
@@ -107,13 +114,10 @@ public class Implementation extends GUI {
 
         clearColor();
         if (LabelObj.getMove() == Move.NEW_POSITION) { //If Label is set to NEW_POSITION the pawn can move to this field
-            LabelObj.setState(State.WHITE); // Set the state of an empty field to white, indicate move
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     if (Label.retrieveLabel(labelList[i][j]).getMove() == Move.SELECTED) { // Search for the pawn which will move to the new Label
-                        Label.retrieveLabel(labelList[i][j]).setState(State.EMPTY); // Replace with Empty Field
-                        loadImage(labelList[i][j], Picture.EMPTY); //Load empty image for the old pawn position
-                        loadImage(Current_Label, Picture.WHITE); //Load the white pawn picture for the new pawn position
+                        movePawn(Label.retrieveLabel(labelList[i][j]), LabelObj);
                         Label.clearMove(); //clear every Move state
                         turn = !turn; //Other player's turn
                         return;
@@ -129,24 +133,24 @@ public class Implementation extends GUI {
             LabelObj.setMove(Move.SELECTED); //Set the move state to selected
             short targetRow = (short) (LabelObj.y - 1); //The row in which the pawn can potentially move
             if (targetRow < 0) return; // Avoid index out of bounds exception. Maybe win here TODO.
-            if (Label.retrieveByCoordinates(LabelObj.x, targetRow).getState() == State.EMPTY) { //Only allow forward move if field is empty
+            if (Label.retrieveLabel(LabelObj.x, targetRow).getState() == State.EMPTY) { //Only allow forward move if field is empty
                 labelList[targetRow][LabelObj.x].setBackground(Color.GREEN); //Indicate a possible move
-                Label.retrieveByCoordinates(LabelObj.x, targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
+                Label.retrieveLabel(LabelObj.x, targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
             }
-            if (LabelObj.x + 1 < 3 &&  Label.retrieveByCoordinates((short)(LabelObj.x + 1), targetRow).getState() == State.BLACK) { //Only allow diagonal move if there is a black pawn
+            if (LabelObj.x + 1 < 3 &&  Label.retrieveLabel((short)(LabelObj.x + 1), targetRow).getState() == State.BLACK) { //Only allow diagonal move if there is a black pawn
                 labelList[targetRow][LabelObj.x + 1].setBackground(Color.GREEN); //Indicate a possible move
-                Label.retrieveByCoordinates((short)(LabelObj.x + 1), targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected-
+                Label.retrieveLabel((short)(LabelObj.x + 1), targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
             }
-            if (LabelObj.x - 1 >= 0 && Label.retrieveByCoordinates((short)(LabelObj.x - 1), targetRow).getState() == State.BLACK) { //Only allow diagonal move if there is a black pawn
+            if (LabelObj.x - 1 >= 0 && Label.retrieveLabel((short)(LabelObj.x - 1), targetRow).getState() == State.BLACK) { //Only allow diagonal move if there is a black pawn
                 labelList[targetRow][LabelObj.x - 1].setBackground(Color.GREEN); //Indicate a possible move
-                Label.retrieveByCoordinates((short)(LabelObj.x - 1), targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
+                Label.retrieveLabel((short)(LabelObj.x - 1), targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
             }
 
         }
 
     }
 
-    public Win checkwin() { //TODO: Implement this and find way to check if no pawn is movable anymore
+    public Win checkWin() { //TODO: Implement this and find way to check if no pawn is movable anymore
         int AmountWhitePawns = 0, AmountBlackPawns = 0;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {

@@ -31,7 +31,7 @@ public class Label {
         return null;
     }
 
-    public static Label retrieveByCoordinates(short x, short y) {
+    public static Label retrieveLabel(short x, short y) {
         return labelList.get(y * 3 + x);
     }
 
