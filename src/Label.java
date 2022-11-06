@@ -51,7 +51,16 @@ public class Label {
     }
 
     public boolean getMovable() {
-        return this.movable;
+        return this.movable; // Not Sure yet if these are still relevant, will delete later if no use is found
+    }
+
+    public static void ResetLabels() {
+        for (short i= 0; i < 3; i++) {
+            retrieveLabel(i, (short) 0).setState(State.BLACK);
+            retrieveLabel(i, (short) 1).setState(State.EMPTY);
+            retrieveLabel(i, (short) 2).setState(State.WHITE);
+        }
+
     }
 
 }
