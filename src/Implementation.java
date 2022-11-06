@@ -94,10 +94,12 @@ public class Implementation extends GUI {
     }
 
     public Win checkWin() {
-        int AmountWhitePawns = 0, AmountBlackPawns = 0;
+        int AmountWhitePawns = 0, AmountBlackPawns = 0, ImmovableWhitePawn = 0, ImmovableBlackPawn = 0;
+
         for (short i = 0; i < 3; i++) {
             for (short j = 0; j < 3; j++) {
                 Label CheckLabel = Label.retrieveLabel(j, i);
+                short targetRow = (CheckLabel.getState() == State.BLACK) ? (short) (CheckLabel.y + 1) : (short) (CheckLabel.y - 1);
                 if (CheckLabel.getState() == State.WHITE) {
                     AmountWhitePawns += 1; // Check for amount of Pawns. If 0 after the Loop, declare Win for Opponent
                 }
@@ -110,7 +112,16 @@ public class Implementation extends GUI {
                 if ((CheckLabel.getState() == State.BLACK) && (CheckLabel.y == 2)) {
                     return Win.BLACKWIN; //if a black pawn is at the first rank, declare win for black
                 }
-
+                if ((!Move.forwardPossible(Label.retrieveLabel(CheckLabel.x, targetRow)) &&
+                        ((CheckLabel.x > 0) && (!Move.leftPossible(CheckLabel, Label.retrieveLabel((short) (CheckLabel.x - 1), targetRow))))
+                        && ((CheckLabel.x < 2) && !Move.rightPossible(CheckLabel, Label.retrieveLabel((short) (CheckLabel.x + 1), targetRow))))) {
+                    if (CheckLabel.getState() == State.WHITE) {
+                        ImmovableWhitePawn += 1;
+                    }
+                    if (CheckLabel.getState() == State.BLACK) {
+                        ImmovableBlackPawn += 1;
+                    }
+                }
                 // TODO: WIN CONDITION: if every pawn has an opponent pawn directly infront of it and no pawn diagonal to it, declare a win
                 // This below sucks. WIP for the TODO above
                 // TODO: FIND A BETTER WAY THAN THIS TO CHECK THE WIN CONDITION
@@ -125,6 +136,10 @@ public class Implementation extends GUI {
         if (AmountBlackPawns == 0) {
             return Win.WHITEWIN;
         }
+        if (AmountWhitePawns == ImmovableWhitePawn)
+            return Win.BLACKWIN;
+        if (AmountBlackPawns == ImmovableBlackPawn)
+            return Win.WHITEWIN;
 
         return Win.UNDECIDED;
     }
