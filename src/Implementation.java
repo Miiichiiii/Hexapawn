@@ -38,15 +38,17 @@ public class Implementation extends GUI {
 
     }
     public void onClick(MouseEvent e) {
-        move(e);
-        if (checkWin() == Win.BLACKWIN) {
-            System.out.println("Black won");
-        }
-        if (checkWin() == Win.WHITEWIN) {
-            System.out.println("White won"); //This is an elementary solution. TODO: Implement a Win Screen and Score
-        }
-        if (checkWin() != Win.UNDECIDED) {
-            ResetGame();
+        if (move(e)) {//Only check for win if a pawn has been moved
+            Win rv = checkWin();
+            if (rv == Win.BLACKWIN) {
+                System.out.println("Black won");
+            }
+            if (rv == Win.WHITEWIN) {
+                System.out.println("White won"); //This is an elementary solution. TODO: Implement a Win Screen and Score
+            }
+            if (rv != Win.UNDECIDED) {
+                ResetGame();
+            }
         }
     }
 
@@ -60,7 +62,8 @@ public class Implementation extends GUI {
         origin.setState(State.EMPTY);
     }
 
-    public void move(MouseEvent e) {
+    public boolean move(MouseEvent e) {
+        //Returns if a pawn has been moved
         JLabel Current_Label = (JLabel) e.getComponent();
         Label LabelObj = Label.retrieveLabel(Current_Label);
         assert LabelObj != null; //IntelliJ cries without this
@@ -69,7 +72,7 @@ public class Implementation extends GUI {
             _movePawn(Move.getSelected(), LabelObj); //Move the pawn to the new field
             Move.resetMove(); //Clear the move variables and color up
             turn = (turn == Turn.BLACK) ? Turn.WHITE : Turn.BLACK; //Other player's turn
-            return;
+            return true;
         }
 
         Move.resetMove(); //Clear the move variables and color up
@@ -77,7 +80,7 @@ public class Implementation extends GUI {
         // If the field has a pawn and the turn is right, allow moves
         if ((LabelObj.getState() == State.BLACK && turn == Turn.BLACK) || (LabelObj.getState() == State.WHITE && turn == Turn.WHITE)) {
             Move.setSelected(LabelObj); //Set the Label to selected
-            if (targetRow > 2 || targetRow < 0) return;
+            if (targetRow > 2 || targetRow < 0) return false;
             if (Move.forwardPossible(Label.retrieveLabel(LabelObj.x, targetRow))) { //Only allow forward move if field is empty
                 Move.setForward(Label.retrieveLabel(LabelObj.x, targetRow)); //Set the Label to be a potential new position
             }
@@ -91,6 +94,7 @@ public class Implementation extends GUI {
             }
 
         }
+        return false;
     }
 
     public Win checkWin() {
@@ -112,9 +116,10 @@ public class Implementation extends GUI {
                 if ((CheckLabel.getState() == State.BLACK) && (CheckLabel.y == 2)) {
                     return Win.BLACKWIN; //if a black pawn is at the first rank, declare win for black
                 }
-                if ((!Move.forwardPossible(Label.retrieveLabel(CheckLabel.x, targetRow)) &&
-                        ((CheckLabel.x > 0) && (!Move.leftPossible(CheckLabel, Label.retrieveLabel((short) (CheckLabel.x - 1), targetRow))))
-                        && ((CheckLabel.x < 2) && !Move.rightPossible(CheckLabel, Label.retrieveLabel((short) (CheckLabel.x + 1), targetRow))))) {
+                if (CheckLabel.getState() != State.EMPTY &&
+                        (!Move.forwardPossible(Label.retrieveLabel(CheckLabel.x, targetRow)) &&
+                        (CheckLabel.x >= 0 && !Move.leftPossible(CheckLabel, Label.retrieveLabel((short) (CheckLabel.x - 1), targetRow))) &&
+                        (CheckLabel.x <= 2 && !Move.rightPossible(CheckLabel, Label.retrieveLabel((short) (CheckLabel.x + 1), targetRow))))) {
                     if (CheckLabel.getState() == State.WHITE) {
                         ImmovableWhitePawn += 1;
                     }
@@ -122,12 +127,6 @@ public class Implementation extends GUI {
                         ImmovableBlackPawn += 1;
                     }
                 }
-                // TODO: WIN CONDITION: if every pawn has an opponent pawn directly infront of it and no pawn diagonal to it, declare a win
-                // This below sucks. WIP for the TODO above
-                // TODO: FIND A BETTER WAY THAN THIS TO CHECK THE WIN CONDITION
-
-
-
             }
         }
         if (AmountWhitePawns == 0) {
@@ -174,10 +173,13 @@ public class Implementation extends GUI {
 
     private boolean loadImage(JLabel label, Picture picture) {
         //Method to simplify loading images
-        String path;
+        String path = "";
         if (picture == Picture.BLACK) path = "pictures/pawn_black.png";
         else if (picture == Picture.WHITE) path = "pictures/pawn_white.png";
-        else path = "pictures/empty_field.png";
+        else if (picture == Picture.EMPTY) path = "pictures/empty_field.png";
+        else if (picture == Picture.BLACK_WIN) path = "pictures/black_win.png";
+        else if (picture == Picture.WHITE_WIN) path = "pictures/white_win.png";
+        else if (picture == Picture.DRAW) path = "pictures/draw.png";
         return _loadPicture(label, path);
     }
 
