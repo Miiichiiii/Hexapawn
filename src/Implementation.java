@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 public class Implementation extends GUI {
     public static Turn turn = Turn.WHITE;
+    public static boolean won = false;
     public static ArrayList<Win> score = new ArrayList<>();
     public static int black_wins = 0;
     public Implementation() {
@@ -75,13 +76,16 @@ public class Implementation extends GUI {
     }
 
     public void onClick(MouseEvent e) {
+        if(won) return;
         if (move(e)) {//Only check for win if a pawn has been moved
             Win rv = checkWin();
             if (rv == Win.BLACKWIN) {
+                won = true;
                 loadImage(winnerLabel, Picture.BLACK_WIN);
                 updateScoreBoard(rv);
             }
             else if (rv == Win.WHITEWIN) {
+                won = true;
                 loadImage(winnerLabel, Picture.WHITE_WIN);
                 updateScoreBoard(rv);
             }
@@ -182,6 +186,7 @@ public class Implementation extends GUI {
     }
 
     private void ResetGame() {
+        won = false;
         initializePictures();
         Move.resetMove();
         Label.ResetLabels();
