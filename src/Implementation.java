@@ -1,3 +1,7 @@
+import enums.Move;
+import enums.Picture;
+import enums.State;
+import enums.Win;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.JLabel;
