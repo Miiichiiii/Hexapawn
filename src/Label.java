@@ -31,6 +31,7 @@ public class Label {
     }
 
     public static Label retrieveLabel(short x, short y) {
+        if (y > 2 || y < 0 || x > 2 || x < 0) return null;
         return labelList.get(y * 3 + x);
     }
 

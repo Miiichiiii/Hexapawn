@@ -10,15 +10,18 @@ public class Move {
     private static Label right = null;
 
     public static boolean forwardPossible(Label target) {
+        if (target == null) return false;
         return (target.getState() == State.EMPTY);  //Only allow forward move if field is empty
     }
 
     public static boolean rightPossible(Label origin, Label target) {
+        if (target == null) return false;
         return (origin.x + 1 < 3 && ((target.getState() == State.WHITE && origin.getState() == State.BLACK) ||
                 (target.getState() == State.BLACK && origin.getState() == State.WHITE)));  //Only allow diagonal move if there is a pawn
     }
 
     public static boolean leftPossible(Label origin, Label target) {
+        if (target == null) return false;
         return (origin.x - 1 >= 0 && ((target.getState() == State.WHITE && origin.getState() == State.BLACK) ||
                 (target.getState() == State.BLACK && origin.getState() == State.WHITE)));  //Only allow diagonal move if there is a pawn
     }

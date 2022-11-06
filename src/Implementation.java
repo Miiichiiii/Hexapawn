@@ -154,8 +154,8 @@ public class Implementation extends GUI {
                 }
                 if (CheckLabel.getState() != State.EMPTY &&
                         (!Move.forwardPossible(Label.retrieveLabel(CheckLabel.x, targetRow)) &&
-                        (CheckLabel.x >= 0 && !Move.leftPossible(CheckLabel, Label.retrieveLabel((short) (CheckLabel.x - 1), targetRow))) &&
-                        (CheckLabel.x <= 2 && !Move.rightPossible(CheckLabel, Label.retrieveLabel((short) (CheckLabel.x + 1), targetRow))))) {
+                        !(Move.leftPossible(CheckLabel, Label.retrieveLabel((short) (CheckLabel.x - 1), targetRow))) &&
+                        !(Move.rightPossible(CheckLabel, Label.retrieveLabel((short) (CheckLabel.x + 1), targetRow))))) {
                     if (CheckLabel.getState() == State.WHITE) {
                         ImmovableWhitePawn += 1;
                     }
@@ -171,10 +171,12 @@ public class Implementation extends GUI {
         if (AmountBlackPawns == 0) {
             return Win.WHITEWIN;
         }
-        if (AmountWhitePawns == ImmovableWhitePawn && turn == Turn.WHITE) //If white has no more move available and it's whites turn
+        if (AmountWhitePawns == ImmovableWhitePawn && turn == Turn.WHITE) { //If white has no more move available and it's whites turn
             return Win.BLACKWIN;
-        if (AmountBlackPawns == ImmovableBlackPawn && turn == Turn.BLACK) //If black has no more move available and it's blacks turn
+        }
+        if (AmountBlackPawns == ImmovableBlackPawn && turn == Turn.BLACK) {//If black has no more move available and it's blacks turn
             return Win.WHITEWIN;
+        }
 
         return Win.UNDECIDED;
     }
