@@ -1,4 +1,3 @@
-import enums.Move;
 import enums.State;
 import javax.swing.*;
 import java.util.ArrayList;
@@ -9,13 +8,11 @@ public class Label {
     private State state;
     private final JLabel label;
     public final short x, y;
-    private Move move;
 
     private boolean movable = true;
     public Label(JLabel label, short x, short y, State state) {
         this.state = state;
         this.label = label;
-        this.move = Move.NONE;
         this.x = x;
         this.y = y;
         jLabelList.add(label);
@@ -39,20 +36,6 @@ public class Label {
 
     public JLabel getLabel() {
         return label;
-    }
-
-    public static void clearMove() {
-        for (Label label : labelList) {
-            label.setMove(Move.NONE);
-        }
-    }
-
-    public Move getMove() {
-        return this.move;
-    }
-
-    public void setMove(Move move) {
-        this.move = move;
     }
 
     public State getState() {

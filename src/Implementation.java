@@ -1,11 +1,7 @@
-import enums.Move;
-import enums.Picture;
-import enums.State;
-import enums.Win;
+import enums.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.JLabel;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -13,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Implementation extends GUI {
-    public static boolean turn = true;
+    public static Turn turn = Turn.WHITE;
     public Implementation() {
         super();
         initializeListener();
@@ -42,16 +38,8 @@ public class Implementation extends GUI {
 
     }
 
-    private void clearColor() {
-        for (JLabel[] jLabels : labelList) {
-            for (JLabel label: jLabels) {
-                label.setBackground(Color.WHITE);
-            }
-        }
-    }
     public void onClick(MouseEvent e) {
-        if (turn) whiteMove(e);
-        else blackMove(e);
+        move(e);
         if (checkWin() == Win.BLACKWIN) {
             System.out.println("Black won");
         }
@@ -60,7 +48,7 @@ public class Implementation extends GUI {
         }
     }
 
-    public void movePawn(Label origin, Label target) {
+    private void _movePawn(Label origin, Label target) {
         target.setState(origin.getState());
         loadImage(origin.getLabel(), Picture.EMPTY);
 
@@ -70,88 +58,39 @@ public class Implementation extends GUI {
         origin.setState(State.EMPTY);
     }
 
-    public void blackMove(MouseEvent e) {
+    public void move(MouseEvent e) {
         JLabel Current_Label = (JLabel) e.getComponent();
         Label LabelObj = Label.retrieveLabel(Current_Label);
         assert LabelObj != null; //IntelliJ cries without this
 
-        clearColor();
-        if (LabelObj.getMove() == Move.NEW_POSITION) { //If Label is set to NEW_POSITION the pawn can move to this field
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    if (Label.retrieveLabel(labelList[i][j]).getMove() == Move.SELECTED) { // Search for the pawn which will move to the new Label
-                        movePawn(Label.retrieveLabel(labelList[i][j]), LabelObj);
-                        Label.clearMove(); //clear every Move state
-                        turn = !turn; //Other player's turn
-                        return;
-                    }
-                }
-            }
+        if (LabelObj == Move.getForward() || LabelObj == Move.getLeft() || LabelObj == Move.getRight()) { //If Label can be the new position of the pawn
+            _movePawn(Move.getSelected(), LabelObj); //Move the pawn to the new field
+            Move.resetMove(); //Clear the move variables and color up
+            turn = (turn == Turn.BLACK) ? Turn.WHITE : Turn.BLACK; //Other player's turn
+            return;
         }
-        Label.clearMove(); //clear every Move state
-        // If the field has a black pawn, allow moves
-        if (LabelObj.getState() == State.BLACK) {
-            Current_Label.setBackground(Color.GRAY); //Indicate that the field is selected
-            LabelObj.setMove(Move.SELECTED); //Set the move state to selected
-            short targetRow = (short) (LabelObj.y + 1); //The row in which the pawn can potentially move
+
+        Move.resetMove(); //Clear the move variables and color up
+        short targetRow = (LabelObj.getState() == State.BLACK) ? (short) (LabelObj.y + 1) : (short) (LabelObj.y - 1); //The row in which the pawn can potentially move
+        // If the field has a pawn and the turn is right, allow moves
+        if ((LabelObj.getState() == State.BLACK && turn == Turn.BLACK) || (LabelObj.getState() == State.WHITE && turn == Turn.WHITE)) {
+            Move.setSelected(LabelObj); //Set the Label to selected
             if (targetRow > 2) return;
             if (Label.retrieveLabel(LabelObj.x, targetRow).getState() == State.EMPTY) { //Only allow forward move if field is empty
-                labelList[targetRow][LabelObj.x].setBackground(Color.GREEN); //Indicate a possible move
-                Label.retrieveLabel(LabelObj.x, targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
+                Move.setForward(Label.retrieveLabel(LabelObj.x, targetRow)); //Set the Label to be a potential new position
             }
-            if (LabelObj.x + 1 < 3 &&  Label.retrieveLabel((short)(LabelObj.x + 1), targetRow).getState() == State.WHITE) { //Only allow diagonal move if there is a black pawn
-                labelList[targetRow][LabelObj.x + 1].setBackground(Color.GREEN); //Indicate a possible move
-                Label.retrieveLabel((short)(LabelObj.x + 1), targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
+            if (LabelObj.x + 1 < 3 && ((Label.retrieveLabel((short)(LabelObj.x + 1), targetRow).getState() == State.WHITE && turn == Turn.BLACK) ||
+                                       (Label.retrieveLabel((short)(LabelObj.x + 1), targetRow).getState() == State.BLACK && turn == Turn.WHITE)))
+            { //Only allow diagonal move if there is a pawn and the turn is right
+                Move.setRight(Label.retrieveLabel((short)(LabelObj.x + 1), targetRow)); //Set the Label to be a potential new position
             }
-            if (LabelObj.x - 1 >= 0 && Label.retrieveLabel((short)(LabelObj.x - 1), targetRow).getState() == State.WHITE) { //Only allow diagonal move if there is a black pawn
-                labelList[targetRow][LabelObj.x - 1].setBackground(Color.GREEN); //Indicate a possible move
-                Label.retrieveLabel((short)(LabelObj.x - 1), targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
-            }
-
-        }
-    }
-
-    public void whiteMove(MouseEvent e) {
-        JLabel Current_Label = (JLabel) e.getComponent();
-        Label LabelObj = Label.retrieveLabel(Current_Label);
-        assert LabelObj != null; //IntelliJ cries without this
-
-        clearColor();
-        if (LabelObj.getMove() == Move.NEW_POSITION) { //If Label is set to NEW_POSITION the pawn can move to this field
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    if (Label.retrieveLabel(labelList[i][j]).getMove() == Move.SELECTED) { // Search for the pawn which will move to the new Label
-                        movePawn(Label.retrieveLabel(labelList[i][j]), LabelObj);
-                        Label.clearMove(); //clear every Move state
-                        turn = !turn; //Other player's turn
-                        return;
-                    }
-
-                }
-            }
-        }
-        Label.clearMove(); //clear every Move state
-        // If the field has a white pawn, allow moves
-        if (LabelObj.getState() == State.WHITE) {
-            Current_Label.setBackground(Color.GRAY); //Indicate that the field is selected
-            LabelObj.setMove(Move.SELECTED); //Set the move state to selected
-            short targetRow = (short) (LabelObj.y - 1); //The row in which the pawn can potentially move
-            if (targetRow < 0) return; // Avoid index out of bounds exception. Maybe win here TODO.
-            if (Label.retrieveLabel(LabelObj.x, targetRow).getState() == State.EMPTY) { //Only allow forward move if field is empty
-                labelList[targetRow][LabelObj.x].setBackground(Color.GREEN); //Indicate a possible move
-                Label.retrieveLabel(LabelObj.x, targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
-            }
-            if (LabelObj.x + 1 < 3 &&  Label.retrieveLabel((short)(LabelObj.x + 1), targetRow).getState() == State.BLACK) { //Only allow diagonal move if there is a black pawn
-                labelList[targetRow][LabelObj.x + 1].setBackground(Color.GREEN); //Indicate a possible move
-                Label.retrieveLabel((short)(LabelObj.x + 1), targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
-            }
-            if (LabelObj.x - 1 >= 0 && Label.retrieveLabel((short)(LabelObj.x - 1), targetRow).getState() == State.BLACK) { //Only allow diagonal move if there is a black pawn
-                labelList[targetRow][LabelObj.x - 1].setBackground(Color.GREEN); //Indicate a possible move
-                Label.retrieveLabel((short)(LabelObj.x - 1), targetRow).setMove(Move.NEW_POSITION); //Set the move state to selected
+            if (LabelObj.x - 1 >= 0 && ((Label.retrieveLabel((short)(LabelObj.x - 1), targetRow).getState() == State.WHITE && turn == Turn.BLACK) ||
+                                       (Label.retrieveLabel((short)(LabelObj.x - 1), targetRow).getState() == State.BLACK && turn == Turn.WHITE)))
+            { //Only allow diagonal move if there is a pawn and the turn is right
+                Move.setLeft(Label.retrieveLabel((short)(LabelObj.x - 1), targetRow)); //Set the Label to be a potential new position
             }
 
         }
-
     }
 
     public Win checkWin() { //TODO: Implement this and find way to check if no pawn is movable anymore
