@@ -37,7 +37,6 @@ public class Implementation extends GUI {
 
 
     }
-
     public void onClick(MouseEvent e) {
         move(e);
         if (checkWin() == Win.BLACKWIN) {
@@ -45,6 +44,9 @@ public class Implementation extends GUI {
         }
         if (checkWin() == Win.WHITEWIN) {
             System.out.println("White won"); //This is an elementary solution. TODO: Implement a Win Screen and Score
+        }
+        if (checkWin() != Win.UNDECIDED) {
+            ResetGame();
         }
     }
 
@@ -93,11 +95,11 @@ public class Implementation extends GUI {
         }
     }
 
-    public Win checkWin() { //TODO: Implement this and find way to check if no pawn is movable anymore
+    public Win checkWin() {
         int AmountWhitePawns = 0, AmountBlackPawns = 0;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                Label CheckLabel = Label.retrieveLabel(labelList[i][j]);
+        for (short i = 0; i < 3; i++) {
+            for (short j = 0; j < 3; j++) {
+                Label CheckLabel = Label.retrieveLabel(j, i);
                 if (CheckLabel.getState() == State.WHITE) {
                     AmountWhitePawns += 1; // Check for amount of Pawns. If 0 after the Loop, declare Win for Opponent
                 }
@@ -110,21 +112,12 @@ public class Implementation extends GUI {
                 if ((CheckLabel.getState() == State.BLACK) && (CheckLabel.y == 2)) {
                     return Win.BLACKWIN; //if a black pawn is at the first rank, declare win for black
                 }
+
                 // TODO: WIN CONDITION: if every pawn has an opponent pawn directly infront of it and no pawn diagonal to it, declare a win
                 // This below sucks. WIP for the TODO above
                 // TODO: FIND A BETTER WAY THAN THIS TO CHECK THE WIN CONDITION
-                if ((CheckLabel.getState() == State.BLACK) && ((Label.retrieveLabel(labelList[CheckLabel.y + 1][CheckLabel.x]).getState() != State.EMPTY))) {
-                    if ((CheckLabel.x < 3) && (Label.retrieveLabel(labelList[CheckLabel.y + 1][CheckLabel.x + 1]).getState() != State.EMPTY)) {
-                        CheckLabel.setMovable(true);
-                    }
-                    else if((CheckLabel.x > 0) && (Label.retrieveLabel(labelList[CheckLabel.y + 1][CheckLabel.x - 1]).getState() != State.EMPTY)) {
-                        CheckLabel.setMovable(true);
-                    }
-                    else {
-                        CheckLabel.setMovable(false);
-                    }
 
-                }
+
 
             }
         }
@@ -136,6 +129,14 @@ public class Implementation extends GUI {
         }
 
         return Win.UNDECIDED;
+    }
+
+    private void ResetGame() {
+        // TODO: add Win screen
+        initializePictures();
+        Move.resetMove();
+        Label.ResetLabels();
+        turn = Turn.WHITE;
     }
 
     private boolean initializePictures() {
