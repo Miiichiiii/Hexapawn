@@ -2,14 +2,20 @@ import enums.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.JLabel;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Implementation extends GUI {
     public static Turn turn = Turn.WHITE;
+    public static ArrayList<Win> score = new ArrayList<>();
+    public static int black_wins = 0;
     public Implementation() {
         super();
         initializeListener();
@@ -49,14 +55,35 @@ public class Implementation extends GUI {
         ResetGame();
     }
 
+    public void updateScoreBoard(Win win) {
+        if (win == Win.BLACKWIN) black_wins++;
+        score.add(win);
+        int white_wins = score.size() - black_wins;
+        String display = "Scoreboard\nBlack : White\n" + black_wins + " : " + white_wins + "\n";
+        for (int i = 0; i < score.size() - 1; i++) {
+            display += ((score.get(i) == Win.WHITEWIN) ? 'W' : 'B') + ", ";
+        }
+        display += (score.get(score.size() - 1) == Win.WHITEWIN) ? 'W' : 'B';
+
+        //Used to center the text
+        StyledDocument doc = scoreBoard.getStyledDocument();
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
+
+        scoreBoard.setText(display);
+    }
+
     public void onClick(MouseEvent e) {
         if (move(e)) {//Only check for win if a pawn has been moved
             Win rv = checkWin();
             if (rv == Win.BLACKWIN) {
                 loadImage(winnerLabel, Picture.BLACK_WIN);
+                updateScoreBoard(rv);
             }
             else if (rv == Win.WHITEWIN) {
                 loadImage(winnerLabel, Picture.WHITE_WIN);
+                updateScoreBoard(rv);
             }
         }
     }

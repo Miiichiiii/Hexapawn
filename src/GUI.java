@@ -13,7 +13,7 @@ public class GUI extends JFrame{
     protected JPanel mainPanel;
     protected JButton newGameButton;
     protected JCheckBox computerCheckBox;
-    protected JTextArea textArea1;
+    protected JTextPane scoreBoard;
     protected JLabel winnerLabel;
     public JLabel[][] labelList = {{label_0_0, label_0_1, label_0_2},
                                    {label_1_0, label_1_1, label_1_2},
