@@ -5,4 +5,5 @@ Hexapawn is a simplified, 3x3 version of chess, which includes only pawns as pla
 It's main purpose was to demonstrate machine learning using a "matchbox computer", which would improve for every round you played, until it was no longer beatable.
 
 We've rebuilt this game in Java to try and implement the selfsame algorithm and get perfect play after just a couple of rounds of playing. 
-(The Algorithm is not yet built or implemented, the game works tough.)
+
+(The Algorithm is not yet built, the game works tough.)
