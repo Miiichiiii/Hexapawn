@@ -266,7 +266,6 @@ public class Implementation extends GUI {
         else if (picture == Picture.EMPTY) path = "pictures/empty_field.png";
         else if (picture == Picture.BLACK_WIN) path = "pictures/black_win.png";
         else if (picture == Picture.WHITE_WIN) path = "pictures/white_win.png";
-        else if (picture == Picture.DRAW) path = "pictures/draw.png";
         return _loadPicture(label, path);
     }
 
