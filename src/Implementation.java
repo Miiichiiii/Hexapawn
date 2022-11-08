@@ -5,6 +5,7 @@ import javax.swing.JLabel;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -49,7 +50,50 @@ public class Implementation extends GUI {
             }
         });
 
+        openMenuItem.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onOpenFileClick();
+            }
+        });
 
+        newMenuItem.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onNewFileClick();
+            }
+        });
+
+        saveMenuItem.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onSaveFileClick();
+            }
+        });
+
+
+    }
+
+    public void onNewFileClick() {
+        //TODO: Reset the AI trained values of the matchbox algorithm
+    }
+
+    public void onOpenFileClick() {
+        int result = this.fileChooser.showOpenDialog(this); //Show the fileChooser dialog
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();  //Get the selected file
+            String path = file.getAbsolutePath();
+            //TODO: Load up the AI trained values for the matchbox algorithm
+        }
+    }
+
+    public void onSaveFileClick() {
+        int result = this.fileChooser.showSaveDialog(this); //Show the fileChooser dialog
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile(); //Get the selected file
+            String path = file.getAbsolutePath();
+            //TODO: Save the AI trained values of the matchbox algorithm
+        }
     }
 
     public void onNewGameClick() {
