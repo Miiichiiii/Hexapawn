@@ -160,25 +160,28 @@ public class Implementation extends GUI {
         }
 
         Move.resetMove(); //Clear the move variables and color up
-        short targetRow = (LabelObj.getState() == State.BLACK) ? (short) (LabelObj.y + 1) : (short) (LabelObj.y - 1); //The row in which the pawn can potentially move
-        // If the field has a pawn and the turn is right, allow moves
-        if ((LabelObj.getState() == State.BLACK && turn == Turn.BLACK) || (LabelObj.getState() == State.WHITE && turn == Turn.WHITE)) {
-            Move.setSelected(LabelObj); //Set the Label to selected
-            if (targetRow > 2 || targetRow < 0) return false;
-            if (Move.forwardPossible(Label.retrieveLabel(LabelObj.x, targetRow))) { //Only allow forward move if field is empty
-                Move.setForward(Label.retrieveLabel(LabelObj.x, targetRow)); //Set the Label to be a potential new position
-            }
-            if (Move.rightPossible(LabelObj, Label.retrieveLabel((short)(LabelObj.x + 1), targetRow)))
-            { //Only allow diagonal move if there is a pawn and the turn is right
-                Move.setRight(Label.retrieveLabel((short)(LabelObj.x + 1), targetRow)); //Set the Label to be a potential new position
-            }
-            if (Move.leftPossible(LabelObj, Label.retrieveLabel((short)(LabelObj.x - 1), targetRow)))
-            { //Only allow diagonal move if there is a pawn and the turn is right
-                Move.setLeft(Label.retrieveLabel((short)(LabelObj.x - 1), targetRow)); //Set the Label to be a potential new position
-            }
-
+        if (turn == Turn.BLACK && computerCheckBox.isSelected()) {
+            ComputerAlgorithm(); //TODO: finish this
         }
-        return false;
+        else {
+            short targetRow = (LabelObj.getState() == State.BLACK) ? (short) (LabelObj.y + 1) : (short) (LabelObj.y - 1); //The row in which the pawn can potentially move
+            // If the field has a pawn and the turn is right, allow moves
+            if ((LabelObj.getState() == State.BLACK && turn == Turn.BLACK) || (LabelObj.getState() == State.WHITE && turn == Turn.WHITE)) {
+                Move.setSelected(LabelObj); //Set the Label to selected
+                if (targetRow > 2 || targetRow < 0) return false;
+                if (Move.forwardPossible(Label.retrieveLabel(LabelObj.x, targetRow))) { //Only allow forward move if field is empty
+                    Move.setForward(Label.retrieveLabel(LabelObj.x, targetRow)); //Set the Label to be a potential new position
+                }
+                if (Move.rightPossible(LabelObj, Label.retrieveLabel((short) (LabelObj.x + 1), targetRow))) { //Only allow diagonal move if there is a pawn and the turn is right
+                    Move.setRight(Label.retrieveLabel((short) (LabelObj.x + 1), targetRow)); //Set the Label to be a potential new position
+                }
+                if (Move.leftPossible(LabelObj, Label.retrieveLabel((short) (LabelObj.x - 1), targetRow))) { //Only allow diagonal move if there is a pawn and the turn is right
+                    Move.setLeft(Label.retrieveLabel((short) (LabelObj.x - 1), targetRow)); //Set the Label to be a potential new position
+                }
+
+            }
+            return false;
+        }
     }
 
     public Win checkWin() {
