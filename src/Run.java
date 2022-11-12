@@ -12,6 +12,7 @@ public class Run {
             @Override
             public void run() {
                 Implementation m = new Implementation();
+                ComputerAlgorithm.implementation = m;
                 m.setVisible(true);
             }
         });

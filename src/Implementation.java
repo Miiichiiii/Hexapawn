@@ -136,7 +136,7 @@ public class Implementation extends GUI {
         }
     }
 
-    private void _movePawn(Label origin, Label target) {
+    public void movePawn(Label origin, Label target) {
         target.setState(origin.getState());
         loadImage(origin.getLabel(), Picture.EMPTY);
 
@@ -153,7 +153,7 @@ public class Implementation extends GUI {
         assert LabelObj != null; //IntelliJ cries without this
 
         if (LabelObj == Move.getForward() || LabelObj == Move.getLeft() || LabelObj == Move.getRight()) { //If Label can be the new position of the pawn
-            _movePawn(Move.getSelected(), LabelObj); //Move the pawn to the new field
+            movePawn(Move.getSelected(), LabelObj); //Move the pawn to the new field
             Move.resetMove(); //Clear the move variables and color up
             turn = (turn == Turn.BLACK) ? Turn.WHITE : Turn.BLACK; //Other player's turn
             return true;
