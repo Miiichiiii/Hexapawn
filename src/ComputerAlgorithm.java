@@ -97,17 +97,9 @@ public class ComputerAlgorithm {
         }
 
         if(root.turn == Turn.WHITE) {
-            Node child = getChild(root, createStateArray());
+            Node child = getChild(root, createStateArray()); //Get the child corresponding to the player's move
             Implementation.turn = Turn.BLACK;
-            if(findMove(child)) {
-                child.deleted = true;
-                for(int i = 0; i < root.children.size(); i++) {
-                    if(!root.children.get(i).deleted) {
-                        return false;
-                    }
-                }
-                return true;
-            }
+            return findMove(child);
         }
         else {
             ArrayList<Label[]> possibleMoves = getMoves(); //Get all possible moves
@@ -130,15 +122,22 @@ public class ComputerAlgorithm {
             Implementation.turn = Turn.WHITE;
             if(findMove(child)) {
                 child.deleted = true;
-                for(int i = 0; i < root.children.size(); i++) {
-                    if(!root.children.get(i).deleted) {
-                        return false; //If there is still one which has not been deleted
-                    }
+                return checkTwoLevelChildren(root);
+            }
+            return false;
+        }
+    }
+
+    public static boolean checkTwoLevelChildren(Node root) {
+        //Returns true if all two level children have been deleted
+        for(int i = 0; i < root.children.size(); i++) {
+            for(int j = 0; j < root.children.get(i).children.size(); i++) {
+                if(!root.children.get(i).children.get(j).deleted) {
+                    return false;
                 }
-                return true; //If there is no child which has not been deleted
             }
         }
-        return false;
+        return true;
     }
 
     public static void createChildren(Node current, ArrayList<Label[]> possibleMoves) {
