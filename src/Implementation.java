@@ -125,18 +125,26 @@ public class Implementation extends GUI {
 
     public void onClick(MouseEvent e) {
         if(won) return;
-        if (move(e)) {//Only check for win if a pawn has been moved
-            Win rv = checkWin();
-            if (rv == Win.BLACKWIN) {
-                won = true;
-                loadImage(winnerLabel, Picture.BLACK_WIN);
-                updateScoreBoard(rv);
+        if (move(e)) { //Only check for win if a pawn has been moved
+            if(!computerCheckBox.isSelected()) {
+                Win rv = checkWin();
+                if(rv != Win.UNDECIDED) {
+                    onWin(rv);
+                }
             }
-            else if (rv == Win.WHITEWIN) {
-                won = true;
-                loadImage(winnerLabel, Picture.WHITE_WIN);
-                updateScoreBoard(rv);
-            }
+        }
+    }
+
+    public void onWin(Win win) {
+        if (win == Win.BLACKWIN) {
+            won = true;
+            loadImage(winnerLabel, Picture.BLACK_WIN);
+            updateScoreBoard(win);
+        }
+        else if (win == Win.WHITEWIN) {
+            won = true;
+            loadImage(winnerLabel, Picture.WHITE_WIN);
+            updateScoreBoard(win);
         }
     }
 
@@ -166,9 +174,6 @@ public class Implementation extends GUI {
             return true;
         }
 
-        if(computerCheckBox.isSelected()) {
-            turn = Turn.WHITE;
-        }
         Move.resetMove(); //Clear the move variables and color up
         if ((LabelObj.getState() == State.BLACK && turn == Turn.BLACK) || (LabelObj.getState() == State.WHITE && turn == Turn.WHITE)) {
             if(computerCheckBox.isSelected()) {

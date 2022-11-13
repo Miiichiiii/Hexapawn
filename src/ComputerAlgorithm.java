@@ -73,30 +73,40 @@ public class ComputerAlgorithm {
 
     public static boolean findMove(Node root) {
         current = root;
+
+        Win rv = implementation.checkWin();
+        if(rv == Win.WHITEWIN) {
+            implementation.onWin(rv);
+            return true;
+        }
+        else if(rv == Win.BLACKWIN) {
+            implementation.onWin(rv);
+            return false;
+        }
+
         if(root == null || root.turn == Turn.WHITE) {
             try {
                 synchronized (thread) {
                     thread.wait(); //Wait for new move
                 }
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException ignored) {}
         }
+
         if(root == null) {
             root = ComputerAlgorithm.root;
         }
 
-        Win rv = implementation.checkWin();
-        if(rv == Win.WHITEWIN) {
-            return true;
-        }
-        else if(rv == Win.BLACKWIN) {
-            return false;
-        }
-
         if(root.turn == Turn.WHITE) {
             Node child = getChild(root, createStateArray());
+            Implementation.turn = Turn.BLACK;
             if(findMove(child)) {
-                root.children.remove(child);
-                return root.children.size() == 0;
+                child.deleted = true;
+                for(int i = 0; i < root.children.size(); i++) {
+                    if(!root.children.get(i).deleted) {
+                        return false;
+                    }
+                }
+                return true;
             }
         }
         else {
@@ -117,9 +127,15 @@ public class ComputerAlgorithm {
                 currentState[currentMove[1].y][currentMove[1].x] = currentMove[1].getState();
             } while (child == null || child.deleted); //Check if the child has already been deleted
             implementation.movePawn(currentMove[0], currentMove[1]);
+            Implementation.turn = Turn.WHITE;
             if(findMove(child)) {
-                root.children.remove(child); //TODO
-                return root.children.size() == 0;
+                child.deleted = true;
+                for(int i = 0; i < root.children.size(); i++) {
+                    if(!root.children.get(i).deleted) {
+                        return false; //If there is still one which has not been deleted
+                    }
+                }
+                return true; //If there is no child which has not been deleted
             }
         }
         return false;
