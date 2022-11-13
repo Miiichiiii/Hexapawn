@@ -5,9 +5,7 @@ import javax.swing.JLabel;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -68,6 +66,12 @@ public class Implementation extends GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 onSaveFileClick();
+            }
+        });
+        computerCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                ComputerAlgorithm.startThread();
             }
         });
 
@@ -156,14 +160,21 @@ public class Implementation extends GUI {
             movePawn(Move.getSelected(), LabelObj); //Move the pawn to the new field
             Move.resetMove(); //Clear the move variables and color up
             turn = (turn == Turn.BLACK) ? Turn.WHITE : Turn.BLACK; //Other player's turn
+            if(computerCheckBox.isSelected()) {
+                ComputerAlgorithm.onMove(); //Make the white move
+            }
             return true;
         }
 
-        Move.resetMove(); //Clear the move variables and color up
-        if (turn == Turn.BLACK && computerCheckBox.isSelected()) {
-            ComputerAlgorithm(); //TODO: finish this
+        if(computerCheckBox.isSelected()) {
+            turn = Turn.WHITE;
         }
-        else {
+        Move.resetMove(); //Clear the move variables and color up
+        if ((LabelObj.getState() == State.BLACK && turn == Turn.BLACK) || (LabelObj.getState() == State.WHITE && turn == Turn.WHITE)) {
+            if(computerCheckBox.isSelected()) {
+                ArrayList<Label[]> possibleMoves = ComputerAlgorithm.getMoves(); //Get all possible moves
+                ComputerAlgorithm.createChildren(ComputerAlgorithm.current, possibleMoves); //Creates children if they don't exist
+            }
             short targetRow = (LabelObj.getState() == State.BLACK) ? (short) (LabelObj.y + 1) : (short) (LabelObj.y - 1); //The row in which the pawn can potentially move
             // If the field has a pawn and the turn is right, allow moves
             if ((LabelObj.getState() == State.BLACK && turn == Turn.BLACK) || (LabelObj.getState() == State.WHITE && turn == Turn.WHITE)) {
@@ -178,10 +189,9 @@ public class Implementation extends GUI {
                 if (Move.leftPossible(LabelObj, Label.retrieveLabel((short) (LabelObj.x - 1), targetRow))) { //Only allow diagonal move if there is a pawn and the turn is right
                     Move.setLeft(Label.retrieveLabel((short) (LabelObj.x - 1), targetRow)); //Set the Label to be a potential new position
                 }
-
             }
-            return false;
         }
+        return false;
     }
 
     public Win checkWin() {
