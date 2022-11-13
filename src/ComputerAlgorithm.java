@@ -144,29 +144,18 @@ public class ComputerAlgorithm {
     public static void createChildren(Node current, ArrayList<Label[]> possibleMoves) {
         if(current == null) {
             root = new Node(createStateArray(), Turn.WHITE); //If there is no tree, create one
+            current = root;
         }
-        else {
-            root = current;
-        }
-        State[][] currentState = createStateArray();
+        State[][] currentState;
         //Create tree possibilities
         for (Label[] possibleMove : possibleMoves) {
             //Basically check if the child already exists and if not add it to tree
+            currentState = createStateArray();
             currentState[possibleMove[0].y][possibleMove[0].x] = State.EMPTY;
             currentState[possibleMove[1].y][possibleMove[1].x] = possibleMove[0].getState();
-            if (!childExists(root, currentState)) {
-                State[][] deepCopy = new State[3][3];
-                for(int y = 0; y < 3; y++) {
-                    State[] row = new State[3];
-                    for(int x = 0; x < 3; x++) {
-                        row[x] = currentState[y][x];
-                    }
-                    deepCopy[y] = row;
-                }
-                root.addChildren(new Node(deepCopy, (root.turn == Turn.BLACK) ? Turn.WHITE : Turn.BLACK));
+            if (!childExists(current, currentState)) {
+                current.addChildren(new Node(currentState, (current.turn == Turn.BLACK) ? Turn.WHITE : Turn.BLACK));
             }
-            currentState[possibleMove[0].y][possibleMove[0].x] = possibleMove[0].getState();
-            currentState[possibleMove[1].y][possibleMove[1].x] = possibleMove[1].getState();
         }
     }
 

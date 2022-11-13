@@ -19,6 +19,7 @@ public class Implementation extends GUI {
     public Implementation() {
         super();
         initializeListener();
+        initializeLabels();
         if(!initializePictures()) {
             System.out.println("Something went wrong with initializing the pictures");
         }
@@ -68,12 +69,7 @@ public class Implementation extends GUI {
                 onSaveFileClick();
             }
         });
-        computerCheckBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                ComputerAlgorithm.startThread();
-            }
-        });
+        computerCheckBox.addItemListener(e -> ComputerAlgorithm.startThread());
 
 
     }
@@ -254,23 +250,35 @@ public class Implementation extends GUI {
         Move.resetMove();
         Label.ResetLabels();
         turn = Turn.WHITE;
+        if(computerCheckBox.isSelected()) {
+            ComputerAlgorithm.startThread();
+        }
+    }
+
+    private void initializeLabels() {
+        for (short x = 0; x < labelList[0].length; x++) {
+            new Label(labelList[0][x], x, (short) 0, State.BLACK); //Instantiate the label class
+        }
+        for (short x = 0; x < labelList[1].length; x++) {
+            new Label(labelList[1][x], x, (short) 1, State.EMPTY); //Instantiate the label class
+        }
+        for (short x = 0; x < labelList[2].length; x++) {
+            new Label(labelList[2][x], x, (short) 2, State.WHITE); //Instantiate the label class
+        }
     }
 
     private boolean initializePictures() {
         boolean works;
         for (short x = 0; x < labelList[0].length; x++) {
             works = loadImage(labelList[0][x], Picture.BLACK); //Load the image for every label in the row
-            new Label(labelList[0][x], x, (short) 0, State.BLACK); //Instantiate the label class
             if (!works) return false; //Return false if an error occurred while loading the images.
         }
         for (short x = 0; x < labelList[1].length; x++) {
             works = loadImage(labelList[1][x], Picture.EMPTY); //Load the image for every label in the row
-            new Label(labelList[1][x], x, (short) 1, State.EMPTY); //Instantiate the label class
             if (!works) return false; //Return false if an error occurred while loading the images.
         }
         for (short x = 0; x < labelList[2].length; x++) {
             works = loadImage(labelList[2][x], Picture.WHITE); //Load the image for every label in the row
-            new Label(labelList[2][x], x, (short) 2, State.WHITE); //Instantiate the label class
             if (!works) return false; //Return false if an error occurred while loading the images.
         }
         return true;
