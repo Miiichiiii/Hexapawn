@@ -1,5 +1,6 @@
 .idea/
 out/
+lib/
 Hexapawn.iml
 Git.iml
 pictures/original_pawn.xcf

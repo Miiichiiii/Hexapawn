@@ -46,7 +46,7 @@ public class Label {
         this.state = state;
     }
 
-    public static void ResetLabels() {
+    public static void resetLabels() {
         for (short i= 0; i < 3; i++) {
             retrieveLabel(i, (short) 0).setState(State.BLACK);
             retrieveLabel(i, (short) 1).setState(State.EMPTY);

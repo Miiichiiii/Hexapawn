@@ -73,14 +73,7 @@ public class Implementation extends GUI {
                 onSaveFileClick();
             }
         });
-        computerCheckBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                onComputerCheckBoxClick(e);
-            }
-        });
-
-
+        computerCheckBox.addItemListener(this::onComputerCheckBoxClick);
     }
 
     public void onComputerCheckBoxClick(ItemEvent e) {
@@ -282,7 +275,7 @@ public class Implementation extends GUI {
         won = false;
         initializePictures();
         Move.resetMove();
-        Label.ResetLabels();
+        Label.resetLabels();
         turn = Turn.WHITE;
         if(computerCheckBox.isSelected()) {
             ComputerAlgorithm.startThread();
