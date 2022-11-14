@@ -16,6 +16,8 @@ public class Implementation extends GUI {
     public static boolean won = false;
     public static ArrayList<Win> score = new ArrayList<>();
     public static int black_wins = 0;
+    public static boolean isGameNew = true;
+    public static boolean computerCheckBoxEnabled = false;
     public Implementation() {
         super();
         initializeListener();
@@ -23,6 +25,8 @@ public class Implementation extends GUI {
         if(!initializePictures()) {
             System.out.println("Something went wrong with initializing the pictures");
         }
+        ArrayList<Label[]> possibleMoves = ComputerAlgorithm.getMoves(); //Get all possible moves
+        ComputerAlgorithm.createChildren(ComputerAlgorithm.current, possibleMoves); //Creates children if they don't exist
     }
 
     private void initializeListener() {
@@ -69,9 +73,35 @@ public class Implementation extends GUI {
                 onSaveFileClick();
             }
         });
-        computerCheckBox.addItemListener(e -> ComputerAlgorithm.startThread());
+        computerCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                onComputerCheckBoxClick(e);
+            }
+        });
 
 
+    }
+
+    public void onComputerCheckBoxClick(ItemEvent e) {
+        if(e.getStateChange() == ItemEvent.SELECTED) {
+            if(isGameNew) {
+                ComputerAlgorithm.startThread();
+                computerCheckBoxEnabled = true;
+            }
+            else if (!computerCheckBoxEnabled) {
+                computerCheckBox.setSelected(false);
+            }
+        }
+        else {
+            if(isGameNew) {
+                ComputerAlgorithm.thread.stop();
+                computerCheckBoxEnabled = false;
+            }
+            else if (computerCheckBoxEnabled) {
+                computerCheckBox.setSelected(true);
+            }
+        }
     }
 
     public void onNewFileClick() {
@@ -132,6 +162,7 @@ public class Implementation extends GUI {
     }
 
     public void onWin(Win win) {
+        isGameNew = true;
         if (win == Win.BLACKWIN) {
             won = true;
             loadImage(winnerLabel, Picture.BLACK_WIN);
@@ -161,6 +192,7 @@ public class Implementation extends GUI {
         assert LabelObj != null; //IntelliJ cries without this
 
         if (LabelObj == Move.getForward() || LabelObj == Move.getLeft() || LabelObj == Move.getRight()) { //If Label can be the new position of the pawn
+            isGameNew = false;
             movePawn(Move.getSelected(), LabelObj); //Move the pawn to the new field
             Move.resetMove(); //Clear the move variables and color up
             turn = (turn == Turn.BLACK) ? Turn.WHITE : Turn.BLACK; //Other player's turn
@@ -196,6 +228,7 @@ public class Implementation extends GUI {
     }
 
     public Win checkWin() {
+        if(won) return Win.UNDECIDED;
         int AmountWhitePawns = 0, AmountBlackPawns = 0, ImmovableWhitePawn = 0, ImmovableBlackPawn = 0;
 
         for (short i = 0; i < 3; i++) {
@@ -244,6 +277,7 @@ public class Implementation extends GUI {
     }
 
     private void ResetGame() {
+        isGameNew = true;
         winnerLabel.setIcon(null);
         won = false;
         initializePictures();
