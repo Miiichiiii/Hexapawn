@@ -26,7 +26,7 @@ public class Implementation extends GUI {
         if(!initializePictures()) {
             System.out.println("Something went wrong with initializing the pictures");
         }
-        ComputerAlgorithm.createChildren(ComputerAlgorithm.current); //Creates children if they don't exist
+        ComputerAlgorithm.createChildren(ComputerAlgorithm.currentNode); //Creates children if they don't exist
     }
 
     private void initializeListener() {
@@ -100,7 +100,7 @@ public class Implementation extends GUI {
     public void onNewFileClick() {
         if(isGameNew || !computerCheckBoxEnabled) {
             ComputerAlgorithm.root = null; //Reset the AI data
-            ComputerAlgorithm.createChildren(ComputerAlgorithm.current); //Creates children if they don't exist
+            ComputerAlgorithm.createChildren(ComputerAlgorithm.currentNode); //Creates children if they don't exist
             if(ComputerAlgorithm.thread != null && ComputerAlgorithm.thread.isAlive()) { //Check if the thread is active
                 //Reload the thread to use the resetted AI data
                 ComputerAlgorithm.thread.stop();
@@ -118,7 +118,7 @@ public class Implementation extends GUI {
                 String json = readFile(path); //Read in the content of the AI save file
                 if (json != null) {
                     ComputerAlgorithm.loadJson(json); //Load up the AI with the json content
-                    ComputerAlgorithm.createChildren(ComputerAlgorithm.current); //Creates children if they don't exist
+                    ComputerAlgorithm.createChildren(ComputerAlgorithm.currentNode); //Creates children if they don't exist
                     if(ComputerAlgorithm.thread != null && ComputerAlgorithm.thread.isAlive()) { //Check if the thread is active
                         //Reload the thread to use the newly loaded AI data
                         ComputerAlgorithm.thread.stop();
@@ -248,7 +248,7 @@ public class Implementation extends GUI {
         Move.resetMove(); //Clear the move variables and color up
         if ((LabelObj.getState() == State.BLACK && turn == Turn.BLACK) || (LabelObj.getState() == State.WHITE && turn == Turn.WHITE)) {
             if(computerCheckBox.isSelected()) {
-                ComputerAlgorithm.createChildren(ComputerAlgorithm.current); //Creates children if they don't exist
+                ComputerAlgorithm.createChildren(ComputerAlgorithm.currentNode); //Creates children if they don't exist
             }
             short targetRow = (LabelObj.getState() == State.BLACK) ? (short) (LabelObj.y + 1) : (short) (LabelObj.y - 1); //The row in which the pawn can potentially move
             // If the field has a pawn and the turn is right, allow moves

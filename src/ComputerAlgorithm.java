@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class ComputerAlgorithm {
     public static Node root = null;
-    public static Node current = null;
+    public static Node currentNode = null;
     public static Implementation implementation;
     public static Thread thread;
 
@@ -91,13 +91,13 @@ public class ComputerAlgorithm {
 
     }
 
-    public static boolean childExists(Node root, State[][] nextState) {
+    public static boolean childExists(Node current, State[][] nextState) {
         //Returns true if there exists such a child with this score
-        return getChild(root, nextState) != null;
+        return getChild(current, nextState) != null;
     }
 
-    public static Node getChild(Node root, State[][] nextState) {
-        for(Node child: root.children) {
+    public static Node getChild(Node current, State[][] nextState) {
+        for(Node child: current.children) {
             if(compareStateArrays(child.value, nextState)) {
                 return child; //Finds and returns the child corresponding to the score, if it exists
             }
@@ -105,8 +105,8 @@ public class ComputerAlgorithm {
         return null;
     }
 
-    public static boolean findMove(Node root) {
-        current = root; //Set the current position of the game in the tree
+    public static boolean findMove(Node current) {
+        ComputerAlgorithm.currentNode = current; //Set the current position of the game in the tree
 
         Win rv = implementation.checkWin(); //Check for wins (BaseCase)
         if(rv == Win.WHITEWIN) {
@@ -118,7 +118,7 @@ public class ComputerAlgorithm {
             return false;
         }
 
-        if(root == null || root.turn == Turn.WHITE) { //Check if it is white's move
+        if(current == null || current.turn == Turn.WHITE) { //Check if it is white's move
             try {
                 synchronized (thread) {
                     thread.wait(); //Wait for the white players move
@@ -126,22 +126,22 @@ public class ComputerAlgorithm {
             } catch (InterruptedException ignored) {}
         }
 
-        if(root == null) {
-            root = ComputerAlgorithm.root; //Root is evaluated by createChildren method
+        if(current == null) {
+            current = ComputerAlgorithm.root; //Root is evaluated by createChildren method
         }
 
-        if(root.turn == Turn.WHITE) {
-            Node child = getChild(root, createStateArray()); //Get the child corresponding to the player's move
+        if(current.turn == Turn.WHITE) {
+            Node child = getChild(current, createStateArray()); //Get the child corresponding to the player's move
             Implementation.turn = Turn.BLACK; //Indicate that Black is now on turn
             return findMove(child); //Make the recursive call and return the value.
             //It is not checked here whether the path needs to be deleted, as only black moves can be changed
         }
         else {
-            createChildren(root); //Creates children if they don't exist
+            createChildren(current); //Creates children if they don't exist
 
             //Get all the children which are not deleted
             ArrayList<Node> notDeleted = new ArrayList<>();
-            for(Node child: root.children) {
+            for(Node child: current.children) {
                 if(!child.deleted) {
                     notDeleted.add(child);
                 }
@@ -150,7 +150,7 @@ public class ComputerAlgorithm {
             //Pick a random move which has not been deleted
             Random random = new Random();
             int rand = random.nextInt(notDeleted.size());
-            Node child = getChild(root, notDeleted.get(rand).value);
+            Node child = getChild(current, notDeleted.get(rand).value);
 
 
             State[][] currentState;
@@ -164,7 +164,7 @@ public class ComputerAlgorithm {
                     Implementation.turn = Turn.WHITE; //Indicate that white is now on turn
                     if(findMove(child)) { //Make the recursive call and check if current child needs to be deleted
                         child.deleted = true; //Delete the child
-                        return checkTwoLevelChildren(root); //Check if all children are deleted then return true because this Node needs to be deleted too
+                        return checkTwoLevelChildren(current); //Check if all children are deleted then return true because this Node needs to be deleted too
                     }
                     break;
                 }
@@ -173,11 +173,11 @@ public class ComputerAlgorithm {
         }
     }
 
-    public static boolean checkTwoLevelChildren(Node root) {
+    public static boolean checkTwoLevelChildren(Node current) {
         //Returns true if all two level children have been deleted
-        for(int i = 0; i < root.children.size(); i++) {
-            for(int j = 0; j < root.children.get(i).children.size(); i++) {
-                if(!root.children.get(i).children.get(j).deleted) {
+        for(int i = 0; i < current.children.size(); i++) {
+            for(int j = 0; j < current.children.get(i).children.size(); i++) {
+                if(!current.children.get(i).children.get(j).deleted) {
                     return false;
                 }
             }
