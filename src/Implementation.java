@@ -1,4 +1,6 @@
 import enums.*;
+import org.json.JSONObject;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.JLabel;
@@ -7,8 +9,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 public class Implementation extends GUI {
@@ -98,7 +99,15 @@ public class Implementation extends GUI {
     }
 
     public void onNewFileClick() {
-        //TODO: Reset the AI trained values of the matchbox algorithm
+        if(isGameNew || !computerCheckBoxEnabled) {
+            ComputerAlgorithm.root = null;
+            ArrayList<Label[]> possibleMoves = ComputerAlgorithm.getMoves(); //Get all possible moves
+            ComputerAlgorithm.createChildren(ComputerAlgorithm.current, possibleMoves); //Creates children if they don't exist
+            if(ComputerAlgorithm.thread != null && ComputerAlgorithm.thread.isAlive()) {
+                ComputerAlgorithm.thread.stop();
+                ComputerAlgorithm.startThread();
+            }
+        }
     }
 
     public void onOpenFileClick() {
@@ -106,21 +115,60 @@ public class Implementation extends GUI {
         if (result == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();  //Get the selected file
             String path = file.getAbsolutePath();
-            //TODO: Load up the AI trained values for the matchbox algorithm
+            if(isGameNew || !computerCheckBoxEnabled) {
+                String json = readFile(path);
+                if (json != null) {
+                    ComputerAlgorithm.loadJson(json);
+                    ArrayList<Label[]> possibleMoves = ComputerAlgorithm.getMoves(); //Get all possible moves
+                    ComputerAlgorithm.createChildren(ComputerAlgorithm.current, possibleMoves); //Creates children if they don't exist
+                    if(ComputerAlgorithm.thread != null && ComputerAlgorithm.thread.isAlive()) {
+                        ComputerAlgorithm.thread.stop();
+                        ComputerAlgorithm.startThread();
+                    }
+                }
+            }
         }
+    }
+
+    public String readFile(String path) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(path));
+            return reader.readLine();
+        }
+        catch (FileNotFoundException e) {}
+        catch (IOException e) {}
+        return null;
     }
 
     public void onSaveFileClick() {
         int result = this.fileChooser.showSaveDialog(this); //Show the fileChooser dialog
+        //TODO https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html
         if (result == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile(); //Get the selected file
             String path = file.getAbsolutePath();
-            //TODO: Save the AI trained values of the matchbox algorithm
+            String json;
+            if(ComputerAlgorithm.root == null) {
+                json = new JSONObject().toString();
+            }
+            else {
+                json = ComputerAlgorithm.getJson(ComputerAlgorithm.root);
+            }
+            writeToFile(path + ".json", json);
         }
     }
 
+    public void writeToFile(String path, String text) {
+        BufferedWriter writer;
+        try {
+            writer = new BufferedWriter(new FileWriter(path));
+            writer.write(text);
+            writer.close();
+        } catch (IOException e) {}
+
+    }
+
     public void onNewGameClick() {
-        ResetGame();
+        resetGame();
     }
 
     public void updateScoreBoard(Win win) {
@@ -269,7 +317,7 @@ public class Implementation extends GUI {
         return Win.UNDECIDED;
     }
 
-    private void ResetGame() {
+    private void resetGame() {
         isGameNew = true;
         winnerLabel.setIcon(null);
         won = false;
@@ -277,7 +325,7 @@ public class Implementation extends GUI {
         Move.resetMove();
         Label.resetLabels();
         turn = Turn.WHITE;
-        if(computerCheckBox.isSelected()) {
+        if(computerCheckBox.isSelected() && ComputerAlgorithm.thread != null && !ComputerAlgorithm.thread.isAlive()) {
             ComputerAlgorithm.startThread();
         }
     }
