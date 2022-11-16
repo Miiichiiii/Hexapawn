@@ -26,8 +26,7 @@ public class Implementation extends GUI {
         if(!initializePictures()) {
             System.out.println("Something went wrong with initializing the pictures");
         }
-        ArrayList<Label[]> possibleMoves = ComputerAlgorithm.getMoves(); //Get all possible moves
-        ComputerAlgorithm.createChildren(ComputerAlgorithm.current, possibleMoves); //Creates children if they don't exist
+        ComputerAlgorithm.createChildren(ComputerAlgorithm.current); //Creates children if they don't exist
     }
 
     private void initializeListener() {
@@ -100,10 +99,10 @@ public class Implementation extends GUI {
 
     public void onNewFileClick() {
         if(isGameNew || !computerCheckBoxEnabled) {
-            ComputerAlgorithm.root = null;
-            ArrayList<Label[]> possibleMoves = ComputerAlgorithm.getMoves(); //Get all possible moves
-            ComputerAlgorithm.createChildren(ComputerAlgorithm.current, possibleMoves); //Creates children if they don't exist
-            if(ComputerAlgorithm.thread != null && ComputerAlgorithm.thread.isAlive()) {
+            ComputerAlgorithm.root = null; //Reset the AI data
+            ComputerAlgorithm.createChildren(ComputerAlgorithm.current); //Creates children if they don't exist
+            if(ComputerAlgorithm.thread != null && ComputerAlgorithm.thread.isAlive()) { //Check if the thread is active
+                //Reload the thread to use the resetted AI data
                 ComputerAlgorithm.thread.stop();
                 ComputerAlgorithm.startThread();
             }
@@ -114,14 +113,14 @@ public class Implementation extends GUI {
         int result = this.fileChooser.showOpenDialog(this); //Show the fileChooser dialog
         if (result == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();  //Get the selected file
-            String path = file.getAbsolutePath();
-            if(isGameNew || !computerCheckBoxEnabled) {
-                String json = readFile(path);
+            String path = file.getAbsolutePath(); //Get the path of the selected file
+            if(isGameNew || !computerCheckBoxEnabled) { //User is only able to load the AI after or at the beginning of a game or if the AI is not enabled
+                String json = readFile(path); //Read in the content of the AI save file
                 if (json != null) {
-                    ComputerAlgorithm.loadJson(json);
-                    ArrayList<Label[]> possibleMoves = ComputerAlgorithm.getMoves(); //Get all possible moves
-                    ComputerAlgorithm.createChildren(ComputerAlgorithm.current, possibleMoves); //Creates children if they don't exist
-                    if(ComputerAlgorithm.thread != null && ComputerAlgorithm.thread.isAlive()) {
+                    ComputerAlgorithm.loadJson(json); //Load up the AI with the json content
+                    ComputerAlgorithm.createChildren(ComputerAlgorithm.current); //Creates children if they don't exist
+                    if(ComputerAlgorithm.thread != null && ComputerAlgorithm.thread.isAlive()) { //Check if the thread is active
+                        //Reload the thread to use the newly loaded AI data
                         ComputerAlgorithm.thread.stop();
                         ComputerAlgorithm.startThread();
                     }
@@ -145,15 +144,15 @@ public class Implementation extends GUI {
         //TODO https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html
         if (result == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile(); //Get the selected file
-            String path = file.getAbsolutePath();
+            String path = file.getAbsolutePath(); //Get the path of the selected file
             String json;
             if(ComputerAlgorithm.root == null) {
                 json = new JSONObject().toString();
             }
             else {
-                json = ComputerAlgorithm.getJson(ComputerAlgorithm.root);
+                json = ComputerAlgorithm.getJson(ComputerAlgorithm.root); //Convert the tree to a json representation
             }
-            writeToFile(path + ".json", json);
+            writeToFile(path + ".json", json); //Write the json representation to a file
         }
     }
 
@@ -172,6 +171,7 @@ public class Implementation extends GUI {
     }
 
     public void updateScoreBoard(Win win) {
+        //Create the text, that is displayed on the scoreboard
         if (win == Win.BLACKWIN) black_wins++;
         score.add(win);
         int white_wins = score.size() - black_wins;
@@ -187,13 +187,14 @@ public class Implementation extends GUI {
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
         doc.setParagraphAttributes(0, doc.getLength(), center, false);
 
+        //Update the text of the scoreboard
         scoreBoard.setText(display);
     }
 
     public void onClick(MouseEvent e) {
         if(won) return;
         if (move(e)) { //Only check for win if a pawn has been moved
-            if(!computerCheckBox.isSelected()) {
+            if(!computerCheckBox.isSelected()) { //If the AI is enabled, win checking is handled by the AI
                 Win rv = checkWin();
                 if(rv != Win.UNDECIDED) {
                     onWin(rv);
@@ -217,6 +218,7 @@ public class Implementation extends GUI {
     }
 
     public void movePawn(Label origin, Label target) {
+        //Method to move a pawn to another field
         target.setState(origin.getState());
         loadImage(origin.getLabel(), Picture.EMPTY);
 
@@ -238,7 +240,7 @@ public class Implementation extends GUI {
             Move.resetMove(); //Clear the move variables and color up
             turn = (turn == Turn.BLACK) ? Turn.WHITE : Turn.BLACK; //Other player's turn
             if(computerCheckBox.isSelected()) {
-                ComputerAlgorithm.onMove(); //Make the white move
+                ComputerAlgorithm.onMove(); //Tell the thread that the white move has been completed
             }
             return true;
         }
@@ -246,8 +248,7 @@ public class Implementation extends GUI {
         Move.resetMove(); //Clear the move variables and color up
         if ((LabelObj.getState() == State.BLACK && turn == Turn.BLACK) || (LabelObj.getState() == State.WHITE && turn == Turn.WHITE)) {
             if(computerCheckBox.isSelected()) {
-                ArrayList<Label[]> possibleMoves = ComputerAlgorithm.getMoves(); //Get all possible moves
-                ComputerAlgorithm.createChildren(ComputerAlgorithm.current, possibleMoves); //Creates children if they don't exist
+                ComputerAlgorithm.createChildren(ComputerAlgorithm.current); //Creates children if they don't exist
             }
             short targetRow = (LabelObj.getState() == State.BLACK) ? (short) (LabelObj.y + 1) : (short) (LabelObj.y - 1); //The row in which the pawn can potentially move
             // If the field has a pawn and the turn is right, allow moves
