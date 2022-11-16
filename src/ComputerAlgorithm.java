@@ -111,27 +111,37 @@ public class ComputerAlgorithm {
             //It is not checked here whether the path needs to be deleted, as only black moves can be changed
         }
         else {
-            ArrayList<Label[]> possibleMoves = getMoves();
             createChildren(root); //Creates children if they don't exist
-            State[][] currentState = createStateArray(); //Get the State array of the current game state
-            Random random = new Random();
-            Label[] currentMove;
-            Node child;
 
-            do {
-                int rand = random.nextInt(possibleMoves.size()); //Get random move
-                currentMove = possibleMoves.get(rand);
+            //Get all the children which are not deleted
+            ArrayList<Node> notDeleted = new ArrayList<>();
+            for(Node child: root.children) {
+                if(!child.deleted) {
+                    notDeleted.add(child);
+                }
+            }
+
+            //Pick a random move which has not been deleted
+            Random random = new Random();
+            int rand = random.nextInt(notDeleted.size());
+            Node child = getChild(root, notDeleted.get(rand).value);
+
+
+            State[][] currentState;
+            ArrayList<Label[]> possibleMoves = getMoves();
+            for(Label[] currentMove : possibleMoves) {
+                currentState = createStateArray();
                 currentState[currentMove[0].y][currentMove[0].x] = State.EMPTY;
                 currentState[currentMove[1].y][currentMove[1].x] = currentMove[0].getState();
-                child = getChild(root, currentState); //Get the child of the random move
-                currentState[currentMove[0].y][currentMove[0].x] = currentMove[0].getState();
-                currentState[currentMove[1].y][currentMove[1].x] = currentMove[1].getState();
-            } while (child == null || child.deleted); //Check if the child has already been deleted
-            implementation.movePawn(currentMove[0], currentMove[1]);
-            Implementation.turn = Turn.WHITE;
-            if(findMove(child)) {
-                child.deleted = true;
-                return checkTwoLevelChildren(root);
+                if(compareStateArrays(currentState, child.value)) { //Find the move corresponding to the randomly selected child
+                    implementation.movePawn(currentMove[0], currentMove[1]); //Move the pawn
+                    Implementation.turn = Turn.WHITE; //Indicate that white is now on turn
+                    if(findMove(child)) { //Make the recursive call and check if current child needs to be deleted
+                        child.deleted = true; //Delete the child
+                        return checkTwoLevelChildren(root); //Check if all children are deleted then return true because this Node needs to be deleted too
+                    }
+                    break;
+                }
             }
             return false;
         }
