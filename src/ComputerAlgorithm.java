@@ -32,6 +32,32 @@ public class ComputerAlgorithm {
         return res;
     }
 
+    public static State[][] createStateArray(String value) {
+        //Method used to create a StateArray by a String which is used to store the State[][] array in JSON
+        State state = State.EMPTY;
+        State[][] stateArray = new State[3][3];
+        State[] row;
+        for(int y = 0; y < 3; y++) {
+            row = new State[3];
+            for(int x = 0; x < 3; x++) {
+                switch (value.charAt(y * 3 + x) - '0') {
+                    case 1:
+                        state = State.BLACK;
+                        break;
+                    case 2:
+                        state = State.WHITE;
+                        break;
+                    case 0:
+                        state = State.EMPTY;
+                        break;
+                }
+                row[x] = state;
+            }
+            stateArray[y] = row;
+        }
+        return stateArray;
+    }
+
     public static void onMove() {
         //Gets called when the white Player makes his move to notify the AI to make its move
         thread.interrupt();
@@ -183,11 +209,12 @@ public class ComputerAlgorithm {
     }
 
     public static String getStateString(Node current) {
+        //Method is used to convert the value (State[][]) of the current Node to a String representation
         String stateString = "";
         int stateInt = 0;
         for(int y = 0; y < 3; y++) {
             for(int x = 0; x < 3; x++) {
-                switch (current.value[y][x]) {
+                switch (current.value[y][x]) { //Convert enum to int
                     case BLACK:
                         stateInt = 1;
                         break;
@@ -204,53 +231,32 @@ public class ComputerAlgorithm {
     }
 
     public static String getJson(Node current) {
+        //Convert the current Node to a JSON String
         return getJsonObject(current).toString();
     }
 
     private static JSONObject getJsonObject(Node current) {
+        //Recursive method which will create a JSONObject of the current Node
         JSONObject main = new JSONObject();
         main.append("value", getStateString(current));
         main.append("deleted", current.deleted);
         main.append("turn", current.turn);
 
         for(int i = 0; i < current.children.size(); i++) {
-            main.append("children", getJsonObject(current.children.get(i)));
+            main.append("children", getJsonObject(current.children.get(i))); //For all children of the current Node, create a JSONObject
         }
-        return main;
+        return main; //Return the JSONObject
     }
 
-    public static State[][] createStateArrayByString(String value) {
-        State state = State.EMPTY;
-        State[][] stateArray = new State[3][3];
-        State[] row;
-        for(int y = 0; y < 3; y++) {
-            row = new State[3];
-            for(int x = 0; x < 3; x++) {
-                switch (value.charAt(y * 3 + x) - '0') {
-                    case 1:
-                        state = State.BLACK;
-                        break;
-                    case 2:
-                        state = State.WHITE;
-                        break;
-                    case 0:
-                        state = State.EMPTY;
-                        break;
-                }
-                row[x] = state;
-            }
-            stateArray[y] = row;
-        }
-        return stateArray;
-    }
     public static void loadJson(String json) {
         JSONObject jsonObject = new JSONObject(json);
-        root = getNode(jsonObject);
+        root = getNode(jsonObject); //Create the tree by the String JSON representation
     }
 
     private static Node getNode(JSONObject obj) {
+        //Method is used to construct the tree by the JSONObjects
         Turn turn = (obj.getJSONArray("turn").getString(0).equals("WHITE")) ? Turn.WHITE : Turn.BLACK;
-        Node current = new Node(createStateArrayByString(obj.getJSONArray("value").getString(0)), turn);
+        Node current = new Node(createStateArray(obj.getJSONArray("value").getString(0)), turn);
         current.deleted = obj.getJSONArray("deleted").getBoolean(0);
 
         if(obj.has("children")) {
