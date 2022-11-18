@@ -23,10 +23,8 @@ public class Implementation extends GUI {
         super();
         initializeListener();
         initializeLabels();
-        if(!initializePictures()) {
-            System.out.println("Something went wrong with initializing the pictures");
-        }
-        ComputerAlgorithm.createChildren(ComputerAlgorithm.currentNode); //Creates children if they don't exist
+        initializePictures();
+        ComputerAlgorithm.createChildren(ComputerAlgorithm.currentNode); //Initializes the ComputerAlgorithm
     }
 
     private void initializeListener() {
@@ -133,9 +131,9 @@ public class Implementation extends GUI {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path));
             return reader.readLine();
+        } catch (IOException e) {
+            System.err.println(e);
         }
-        catch (FileNotFoundException e) {}
-        catch (IOException e) {}
         return null;
     }
 
@@ -162,7 +160,9 @@ public class Implementation extends GUI {
             writer = new BufferedWriter(new FileWriter(path));
             writer.write(text);
             writer.close();
-        } catch (IOException e) {}
+        } catch (IOException e) {
+            System.err.println(e);
+        }
 
     }
 
@@ -343,24 +343,19 @@ public class Implementation extends GUI {
         }
     }
 
-    private boolean initializePictures() {
-        boolean works;
+    private void initializePictures() {
         for (short x = 0; x < labelList[0].length; x++) {
-            works = loadImage(labelList[0][x], Picture.BLACK); //Load the image for every label in the row
-            if (!works) return false; //Return false if an error occurred while loading the images.
+            loadImage(labelList[0][x], Picture.BLACK); //Load the image for every label in the row
         }
         for (short x = 0; x < labelList[1].length; x++) {
-            works = loadImage(labelList[1][x], Picture.EMPTY); //Load the image for every label in the row
-            if (!works) return false; //Return false if an error occurred while loading the images.
+            loadImage(labelList[1][x], Picture.EMPTY); //Load the image for every label in the row
         }
         for (short x = 0; x < labelList[2].length; x++) {
-            works = loadImage(labelList[2][x], Picture.WHITE); //Load the image for every label in the row
-            if (!works) return false; //Return false if an error occurred while loading the images.
+            loadImage(labelList[2][x], Picture.WHITE); //Load the image for every label in the row
         }
-        return true;
     }
 
-    private boolean loadImage(JLabel label, Picture picture) {
+    private void loadImage(JLabel label, Picture picture) {
         //Method to simplify loading images
         String path = "";
         if (picture == Picture.BLACK) path = "pictures/pawn_black.png";
@@ -368,10 +363,10 @@ public class Implementation extends GUI {
         else if (picture == Picture.EMPTY) path = "pictures/empty_field.png";
         else if (picture == Picture.BLACK_WIN) path = "pictures/black_win.png";
         else if (picture == Picture.WHITE_WIN) path = "pictures/white_win.png";
-        return _loadPicture(label, path);
+        _loadPicture(label, path);
     }
 
-    private boolean _loadPicture(JLabel label, String path) {
+    private void _loadPicture(JLabel label, String path) {
         //Catch the exception if something went wrong with loading the image
         try {
             BufferedImage image = ImageIO.read(new File(path)); //Read the image
@@ -379,8 +374,7 @@ public class Implementation extends GUI {
             label.setIcon(icon); //Set the icon to the label
         }
         catch (IOException ex) {
-            return false;
+            System.err.println(ex);
         }
-        return true;
     }
 }

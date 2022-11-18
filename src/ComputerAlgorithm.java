@@ -2,6 +2,7 @@ import enums.State;
 import enums.Turn;
 import enums.Win;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -232,7 +233,13 @@ public class ComputerAlgorithm {
 
     public static String getJson(Node current) {
         //Convert the current Node to a JSON String
-        return getJsonObject(current).toString();
+        try {
+            return getJsonObject(current).toString();
+        }
+        catch (JSONException e) {
+            System.err.println(e);
+            return null;
+        }
     }
 
     private static JSONObject getJsonObject(Node current) {
@@ -250,7 +257,12 @@ public class ComputerAlgorithm {
 
     public static void loadJson(String json) {
         JSONObject jsonObject = new JSONObject(json);
-        root = getNode(jsonObject); //Create the tree by the String JSON representation
+        try {
+            root = getNode(jsonObject); //Create the tree by the String JSON representation
+        }
+        catch (JSONException ex) {
+            System.err.println(ex);
+        }
     }
 
     private static Node getNode(JSONObject obj) {
@@ -267,5 +279,4 @@ public class ComputerAlgorithm {
         }
         return current;
     }
-
 }
