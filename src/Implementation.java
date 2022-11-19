@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.JLabel;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -24,7 +25,28 @@ public class Implementation extends GUI {
         initializeListener();
         initializeLabels();
         initializePictures();
+        initializeFileChooserFilter();
         ComputerAlgorithm.createChildren(ComputerAlgorithm.currentNode); //Initializes the ComputerAlgorithm
+    }
+
+    private void initializeFileChooserFilter() {
+        this.fileChooser.setAcceptAllFileFilterUsed(false);
+        this.fileChooser.addChoosableFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if(f.isDirectory()) {
+                    return true;
+                }
+                String fileName = f.getName();
+                String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                return extension.equals("json");
+            }
+
+            @Override
+            public String getDescription() {
+                return null;
+            }
+        });
     }
 
     private void initializeListener() {
@@ -139,7 +161,6 @@ public class Implementation extends GUI {
 
     public void onSaveFileClick() {
         int result = this.fileChooser.showSaveDialog(this); //Show the fileChooser dialog
-        //TODO https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html
         if (result == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile(); //Get the selected file
             String path = file.getAbsolutePath(); //Get the path of the selected file
