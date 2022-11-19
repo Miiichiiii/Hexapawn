@@ -20,6 +20,9 @@ We've rebuilt this game in Java to try and implement the selfsame algorithm and 
   *  Opening the AI
   *  Resetting the AI
 
+## **Dependencies**
+*  [JSON [package org.json]](https://github.com/stleary/JSON-java)
+
 ## **Preview**
 Here is a small preview on how the game looks:
 
