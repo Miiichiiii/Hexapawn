@@ -27,5 +27,5 @@ Here is a small preview on how the game looks:
 
 ## **Authors**
 
-- [Michael Büttner](https://github.com/Miiichiiii)
 - [Moritz Meyer](https://github.com/MoritzMy)
+- [Michael Büttner](https://github.com/Miiichiiii)
