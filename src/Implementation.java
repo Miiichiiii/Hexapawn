@@ -390,9 +390,18 @@ public class Implementation extends GUI {
     private void _loadPicture(JLabel label, String path) {
         //Catch the exception if something went wrong with loading the image
         try {
-            BufferedImage image = ImageIO.read(new File(path)); //Read the image
+            BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(path.substring(path.lastIndexOf("/") + 1))); //Read the image
             ImageIcon icon = new ImageIcon(image); //Convert the image to an icon
             label.setIcon(icon); //Set the icon to the label
+        }
+        catch (IllegalArgumentException ex) {
+            try {
+                BufferedImage image = ImageIO.read(new File(path)); //Read the image
+                ImageIcon icon = new ImageIcon(image); //Convert the image to an icon
+                label.setIcon(icon); //Set the icon to the label
+            } catch (IOException e) {
+                System.err.println(e);
+            }
         }
         catch (IOException ex) {
             System.err.println(ex);
